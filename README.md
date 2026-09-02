@@ -6,7 +6,7 @@ APET is an independent, politically neutral project. It does not advocate for or
 
 ## Current coverage
 
-The repository documents processing pipelines for parliamentary expenditure, Australian Government procurement, and grant-award data.
+The repository documents processing pipelines for parliamentary expenditure, Australian Government procurement, grant-award data, and Australian Government Finance Statistics.
 
 Official sources:
 
@@ -14,6 +14,7 @@ Official sources:
 - [IPEA datasets on data.gov.au](https://data.gov.au/data/organization/ipea)
 - [AusTender](https://www.tenders.gov.au/)
 - [GrantConnect](https://www.grants.gov.au/)
+- [Australian Bureau of Statistics — Government](https://www.abs.gov.au/statistics/economy/government)
 
 ## Published data pipelines
 
@@ -41,11 +42,39 @@ APET's GrantConnect pipeline produces quarterly and annual summaries from public
 - [GrantConnect scripts](scripts/grantconnect)
 - [Shared chart helpers](scripts/chart_helpers.py)
 
+### ABS Government Finance Statistics
+
+APET's ABS Government Finance Statistics (GFS) pipeline downloads official ABS data, normalises the source into a stable schema, and produces annual summaries using Australian financial years (July to June).
+
+The charts currently show:
+
+- general government expenses by purpose
+- where every $100 of expenses went
+- expenses by level of government
+
+The figures describe All Australia general government expenses on an accrual basis. They are current-price, original-series values and are not adjusted for inflation. Published components may differ slightly from totals because the ABS rounds values. ABS GFS is an aggregate statistical source; it does not identify individual contracts or grant awards.
+
+Run the scripts from `scripts/abs_gfs/` in this order:
+
+```powershell
+python .\fetch_abs_gfs.py
+python .\normalize_abs_gfs.py
+python .\generate_abs_gfs_charts.py
+```
+
+The fetch step preserves the official raw source, the normalisation step creates consistent CSV inputs, and the chart step produces PNG review/social copies plus SVG and supporting CSV files for the website. Generated data and chart folders remain outside version control; the documented scripts provide the reproducible method.
+
+- [ABS GFS workflow and running instructions](scripts/abs_gfs/README.md)
+- [ABS GFS scripts](scripts/abs_gfs)
+- [Published ABS GFS charts](https://auspublicexp.org/abs-gfs/)
+- [Official ABS government statistics](https://www.abs.gov.au/statistics/economy/government)
+
 ## Repository structure
 
 ```text
 scripts/
 ├── chart_helpers.py
+├── abs_gfs/
 ├── austender/
 ├── grantconnect/
 └── ipea/
