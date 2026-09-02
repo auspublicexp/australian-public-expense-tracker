@@ -4,16 +4,16 @@ Australian Public Expense Tracker (APET) presents publicly available Australian 
 
 APET is an independent, politically neutral project. It does not advocate for or against any political party, parliamentarian or policy. Its purpose is to make official expenditure data easier to explore and understand so readers can draw their own conclusions.
 
-## Current focus
+## Current coverage
 
-The project is beginning with parliamentary expenditure data published by the Independent Parliamentary Expenses Authority (IPEA).
+The repository documents processing pipelines for parliamentary expenditure, Australian Government procurement, and grant-award data.
 
 Official sources:
 
 - [Independent Parliamentary Expenses Authority](https://www.ipea.gov.au/)
 - [IPEA datasets on data.gov.au](https://data.gov.au/data/organization/ipea)
-
-The project may later expand to other public spending datasets, including procurement, grants and government financial reporting.
+- [AusTender](https://www.tenders.gov.au/)
+- [GrantConnect](https://www.grants.gov.au/)
 
 ## Published data pipelines
 
@@ -22,19 +22,36 @@ The project may later expand to other public spending datasets, including procur
 APET's IPEA pipeline downloads official quarterly expenditure extracts and produces quarterly and Australian financial-year summaries.
 
 - [Methodology and limitations](docs/ipea-methodology.md)
-- [Official-data downloader](scripts/ipea/download_missing_ipea_data.py)
-- [Quarterly chart-generation script](scripts/ipea/generate_quarterly_charts.py)
-- [Annual chart-generation script](scripts/ipea/generate_annual_charts.py)
+- [IPEA scripts](scripts/ipea)
+- [Shared chart helpers](scripts/chart_helpers.py)
+
+### AusTender
+
+APET's AusTender pipeline combines official contract-notice exports, resolves amendments for historical reporting, and produces quarterly procurement summaries.
+
+- [Methodology and limitations](docs/austender-methodology.md)
+- [AusTender scripts](scripts/austender)
 - [Shared chart helpers](scripts/chart_helpers.py)
 
 ### GrantConnect
 
-APET's GrantConnect pipeline produces quarterly summaries from publicly available Australian Government grant-award exports.
+APET's GrantConnect pipeline produces quarterly and annual summaries from publicly available Australian Government grant-award exports.
 
 - [Methodology and limitations](docs/grantconnect-methodology.md)
-- [Chart-generation script](scripts/generate_grantconnect_quarterly_charts.py)
-- [Archive reconciliation script](scripts/reconcile_grantconnect_archive.py)
+- [GrantConnect scripts](scripts/grantconnect)
 - [Shared chart helpers](scripts/chart_helpers.py)
+
+## Repository structure
+
+```text
+scripts/
+├── chart_helpers.py
+├── austender/
+├── grantconnect/
+└── ipea/
+```
+
+Source datasets and generated outputs are kept outside version control. See the methodology document for each pipeline for its expected local structure, processing steps, limitations, and running instructions.
 
 ## Transparency and methodology
 
@@ -42,7 +59,7 @@ APET aims to provide an auditable path from each published result back to its of
 
 **Official government data → APET processing script → chart or table → published page**
 
-This repository will contain the scripts and methodology used to download, clean, transform and present the data. Where practical, each published chart or table will identify:
+Where practical, each published chart or table will identify:
 
 - the official source dataset
 - the relevant reporting period
@@ -54,19 +71,11 @@ The official government publisher remains the authoritative source. APET does no
 
 ## Reproducibility
 
-As the project develops, this repository will include:
-
-- documented data-processing scripts
-- source links and retrieval notes
-- chart-generation code
-- methodology notes
-- software requirements and instructions for reproducing outputs
-
-Large source datasets may not be stored in this repository. Instead, APET will link to the official download page or API and record enough information for the analysis to be reproduced.
+This repository includes documented data-processing scripts, source links, chart-generation code, methodology notes, and software requirements. Large source datasets are not stored here; users should obtain them from the official publisher.
 
 ## Project status
 
-APET is in early development. The repository structure, documentation and methodology will evolve as the first IPEA data pipeline and public website are built.
+APET is in active development. Repository documentation and methodology will evolve as data pipelines and the public website expand.
 
 ## Corrections and questions
 
