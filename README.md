@@ -4,6 +4,8 @@ Australian Public Expense Tracker (APET) presents publicly available Australian 
 
 APET is an independent, politically neutral project. It does not advocate for or against any political party, parliamentarian or policy. Its purpose is to make official expenditure data easier to explore and understand so readers can draw their own conclusions.
 
+**[View the published charts at auspublicexp.org](https://auspublicexp.org/)**
+
 ## Current coverage
 
 The repository documents processing pipelines for parliamentary expenditure, Australian Government procurement, grant-award data, and Australian Government Finance Statistics.
@@ -15,6 +17,17 @@ Official sources:
 - [AusTender](https://www.tenders.gov.au/)
 - [GrantConnect](https://www.grants.gov.au/)
 - [Australian Bureau of Statistics — Government](https://www.abs.gov.au/statistics/economy/government)
+
+## Understanding the figures
+
+The four sources measure different things and their values should not be treated as interchangeable.
+
+| Dataset | What the value represents |
+| --- | --- |
+| IPEA | Reported parliamentary expenses for the relevant reporting period. |
+| AusTender | Reported contract value, not necessarily cash paid during the period. |
+| GrantConnect | Published grant-award value, not necessarily cash paid during the period. |
+| ABS GFS | Aggregate government expenses recorded on an accrual basis, not individual transactions or inflation-adjusted growth. |
 
 ## Published data pipelines
 
@@ -44,28 +57,10 @@ APET's GrantConnect pipeline produces quarterly and annual summaries from public
 
 ### ABS Government Finance Statistics
 
-APET's ABS Government Finance Statistics (GFS) pipeline downloads official ABS data, normalises the source into a stable schema, and produces annual summaries using Australian financial years (July to June).
+APET's ABS Government Finance Statistics (GFS) pipeline produces annual summaries using Australian financial years (July to June). The figures describe All Australia general government expenses on an accrual basis and are presented in current prices, original series.
 
-The charts currently show:
-
-- general government expenses by purpose
-- where every $100 of expenses went
-- expenses by level of government
-
-The figures describe All Australia general government expenses on an accrual basis. They are current-price, original-series values and are not adjusted for inflation. Published components may differ slightly from totals because the ABS rounds values. ABS GFS is an aggregate statistical source; it does not identify individual contracts or grant awards.
-
-Run the scripts from `scripts/abs_gfs/` in this order:
-
-```powershell
-python .\fetch_abs_gfs.py
-python .\normalize_abs_gfs.py
-python .\generate_abs_gfs_charts.py
-```
-
-The fetch step preserves the official raw source, the normalisation step creates consistent CSV inputs, and the chart step produces PNG review/social copies plus SVG and supporting CSV files for the website. Generated data and chart folders remain outside version control; the documented scripts provide the reproducible method.
-
-- [ABS GFS workflow and running instructions](scripts/abs_gfs/README.md)
-- [ABS GFS scripts](scripts/abs_gfs)
+- [Methodology and limitations](docs/abs-gfs-methodology.md)
+- [ABS GFS scripts and workflow](scripts/abs_gfs)
 - [Published ABS GFS charts](https://auspublicexp.org/abs-gfs/)
 - [Official ABS government statistics](https://www.abs.gov.au/statistics/economy/government)
 
@@ -104,7 +99,7 @@ This repository includes documented data-processing scripts, source links, chart
 
 ## Project status
 
-APET is in active development. Repository documentation and methodology will evolve as data pipelines and the public website expand.
+APET is an independently maintained hobby project. Updates are published when time and official source data permit; no fixed publication schedule is promised. Repository documentation and methodology may evolve as the project develops.
 
 ## Corrections and questions
 
