@@ -1,0 +1,70 @@
+name: Report a possible data discrepancy
+description: Report a possible difference between an APET output and its official source.
+title: "Data discrepancy: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve Australian Public Expense Tracker. The official government publisher remains the authoritative source.
+
+  - type: dropdown
+    id: pipeline
+    attributes:
+      label: Data pipeline
+      description: Which source does the report concern?
+      options:
+        - IPEA
+        - AusTender
+        - GrantConnect
+        - Other or unsure
+    validations:
+      required: true
+
+  - type: input
+    id: reporting-period
+    attributes:
+      label: Reporting period
+      description: Provide the relevant quarter, financial year, or date range.
+      placeholder: For example, FY2025-26 Q1
+    validations:
+      required: true
+
+  - type: input
+    id: apet-page
+    attributes:
+      label: APET page or chart
+      description: Paste the APET page URL or give the chart title.
+      placeholder: https://auspublicexp.org/...
+    validations:
+      required: true
+
+  - type: input
+    id: official-source
+    attributes:
+      label: Official source
+      description: Paste the relevant official record, dataset, or download-page URL.
+      placeholder: https://...
+    validations:
+      required: true
+
+  - type: textarea
+    id: discrepancy
+    attributes:
+      label: What appears to differ?
+      description: Explain what APET shows, what the official source shows, and the difference between them.
+    validations:
+      required: true
+
+  - type: textarea
+    id: supporting-detail
+    attributes:
+      label: Supporting detail
+      description: Add any calculations, record identifiers, screenshots, or other context that may help reproduce the issue.
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: I checked the relevant official source and have not included private or sensitive information.
+          required: true
