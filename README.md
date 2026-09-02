@@ -53,4 +53,4 @@ Questions, corrections and reproducibility issues can be raised through this rep
 
 ## Licence
 
-No licence has been selected yet. Until one is added, the repository's contents remain subject to standard copyright protections.
+This project's original code is available under the [MIT License](LICENSE). Government source datasets remain subject to the terms specified by their original publishers.
