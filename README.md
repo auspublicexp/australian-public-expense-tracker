@@ -17,6 +17,16 @@ The project may later expand to other public spending datasets, including procur
 
 ## Published data pipelines
 
+### IPEA parliamentary expenditure
+
+APET's IPEA pipeline downloads official quarterly expenditure extracts and produces quarterly and Australian financial-year summaries.
+
+- [Methodology and limitations](docs/ipea-methodology.md)
+- [Official-data downloader](scripts/ipea/download_missing_ipea_data.py)
+- [Quarterly chart-generation script](scripts/ipea/generate_quarterly_charts.py)
+- [Annual chart-generation script](scripts/ipea/generate_annual_charts.py)
+- [Shared chart helpers](scripts/chart_helpers.py)
+
 ### GrantConnect
 
 APET's GrantConnect pipeline produces quarterly summaries from publicly available Australian Government grant-award exports.
