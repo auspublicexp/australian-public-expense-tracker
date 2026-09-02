@@ -15,6 +15,17 @@ Official sources:
 
 The project may later expand to other public spending datasets, including procurement, grants and government financial reporting.
 
+## Published data pipelines
+
+### GrantConnect
+
+APET's GrantConnect pipeline produces quarterly summaries from publicly available Australian Government grant-award exports.
+
+- [Methodology and limitations](docs/grantconnect-methodology.md)
+- [Chart-generation script](scripts/generate_grantconnect_quarterly_charts.py)
+- [Archive reconciliation script](scripts/reconcile_grantconnect_archive.py)
+- [Shared chart helpers](scripts/chart_helpers.py)
+
 ## Transparency and methodology
 
 APET aims to provide an auditable path from each published result back to its official source:
