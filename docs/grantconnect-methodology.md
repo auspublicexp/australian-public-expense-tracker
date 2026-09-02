@@ -22,8 +22,10 @@ australian-public-expense-tracker/
 │   └── grantconnect/             # generated charts and supporting files
 └── scripts/
     ├── chart_helpers.py
-    ├── generate_grantconnect_quarterly_charts.py
-    └── reconcile_grantconnect_archive.py
+    └── grantconnect/
+        ├── generate_grantconnect_annual_charts.py
+        ├── generate_grantconnect_quarterly_charts.py
+        └── reconcile_grantconnect_archive.py
 ```
 
 Expected workbook names follow this pattern:
@@ -83,7 +85,9 @@ pip install -r requirements.txt
 Place the source workbooks under `data/grantconnect`, then run:
 
 ```text
-python scripts/generate_grantconnect_quarterly_charts.py
+python scripts/grantconnect/generate_grantconnect_quarterly_charts.py
 ```
 
 To point the reconciliation script at a non-standard downloads folder, set the `APET_DOWNLOAD_DIR` environment variable before running it.
+
+Website asset mirroring is disabled by default. Set `APET_GRANTCONNECT_WEBSITE_CHART_DIR` when the annual script should also copy generated SVG and CSV files into a website project.
