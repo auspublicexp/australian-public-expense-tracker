@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: If you use this software or its methodology, please cite it using the information below.
+title: Australian Public Expense Tracker
+type: software
+authors:
+  - name: Australian Public Expense Tracker
+license: MIT
+repository-code: https://github.com/auspublicexp/australian-public-expense-tracker
+url: https://auspublicexp.org/
+abstract: Scripts and methodology for producing neutral, reproducible summaries of publicly available Australian Government expenditure data.
