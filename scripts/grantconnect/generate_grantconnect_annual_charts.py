@@ -1,7 +1,7 @@
 from pathlib import Path
-import os
 import re
 import shutil
+import subprocess
 import sys
 
 import matplotlib.pyplot as plt
@@ -40,13 +40,8 @@ from chart_helpers import (  # noqa: E402
 
 GRANTCONNECT_DATA_DIR = DATA_DIR / "grantconnect"
 GRANTCONNECT_OUTPUT_DIR = OUTPUT_DIR / "grantconnect"
-GRANTCONNECT_WEBSITE_CHART_DIR_VALUE = os.environ.get(
-    "APET_GRANTCONNECT_WEBSITE_CHART_DIR"
-)
-GRANTCONNECT_WEBSITE_CHART_DIR = (
-    Path(GRANTCONNECT_WEBSITE_CHART_DIR_VALUE).expanduser()
-    if GRANTCONNECT_WEBSITE_CHART_DIR_VALUE
-    else None
+GRANTCONNECT_WEBSITE_CHART_DIR = Path(
+    r"C:\dev\australian-public-expense-tracker\website\public_html\charts\grantconnect"
 )
 
 # This matches monthly files and split-month files such as:
@@ -329,9 +324,6 @@ def save_outputs(data, chart_path):
 
 def mirror_file_to_website(source_path):
     """Copy a generated website asset into the matching website annual folder."""
-    if GRANTCONNECT_WEBSITE_CHART_DIR is None:
-        return
-
     period_name = source_path.parent.name
     website_period_dir = GRANTCONNECT_WEBSITE_CHART_DIR / period_name
     website_period_dir.mkdir(parents=True, exist_ok=True)
@@ -748,6 +740,11 @@ def main():
 
     for financial_year in years_to_generate:
         generate_charts_for_year(df, financial_year)
+
+    search_builder = Path(__file__).with_name("build_grantconnect_search_index.py")
+    if search_builder.exists():
+        print("\nUpdating the GrantConnect website search index...")
+        subprocess.run([sys.executable, str(search_builder)], check=True)
 
     print("\nDone.")
 

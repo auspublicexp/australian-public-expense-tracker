@@ -1,17 +1,24 @@
 from pathlib import Path
+import shutil
+import subprocess
 import sys
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import pandas as pd
 
+# Keep text as real text in SVG output instead of converting glyphs to paths.
+plt.rcParams["svg.fonttype"] = "none"
+
 
 # ============================================================
 # IMPORT SHARED CHART HELPERS
 # ============================================================
 
-SCRIPTS_DIR = Path(__file__).resolve().parent
+SCRIPTS_DIR = Path(__file__).resolve().parents[1]
 sys.path.append(str(SCRIPTS_DIR))
+
+import chart_helpers as chart_helpers_module  # noqa: E402
 
 from chart_helpers import (  # noqa: E402
     DATA_DIR,
@@ -23,7 +30,6 @@ from chart_helpers import (  # noqa: E402
     wrap_label,
     create_horizontal_bar_chart,
     save_chart_data,
-    save_x_post,
 )
 
 
@@ -33,6 +39,9 @@ from chart_helpers import (  # noqa: E402
 
 GRANTCONNECT_DATA_DIR = DATA_DIR / "grantconnect"
 GRANTCONNECT_OUTPUT_DIR = OUTPUT_DIR / "grantconnect"
+GRANTCONNECT_WEBSITE_CHART_DIR = Path(
+    r"C:\dev\australian-public-expense-tracker\website\public_html\charts\grantconnect"
+)
 
 # This matches monthly files and split-month files such as:
 # grantconnect_FY2024-25_Q4_2025-05.xlsx
@@ -45,7 +54,10 @@ INPUT_FILE_PATTERN = "grantconnect_FY????-??_Q?_????-??*.xlsx"
 TARGET_FY_QUARTER = None
 COMPLETE_QUARTERS_ONLY = True
 
-SOURCE_TEXT = "GrantConnect grant award export via grants.gov.au"
+SOURCE_TEXT = (
+    "GrantConnect grant award export via grants.gov.au"
+    "  |  auspublicexp.org"
+)
 LOCAL_TOP_N = 10
 
 VALUE_COL = "Value (AUD)"
@@ -53,6 +65,55 @@ DATE_COL = "Publish Date"
 GA_ID_COL = "GA ID"
 
 GRANTCONNECT_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+
+# ============================================================
+# CLICKABLE FOOTER LINKS
+# ============================================================
+
+def add_standard_footer_with_links(fig, ax, source_text):
+    """Render one footer line whose visible link text is clickable in SVG.
+
+    The same labels remain visible in PNG output, but URL metadata is only
+    actionable in vector formats such as SVG.
+    """
+    chart_helpers_module.add_brand_logo(fig)
+
+    segments = [
+        ("Source: GrantConnect grant award export via ", None, "#555555"),
+        ("grants.gov.au", "https://grants.gov.au/", "#0d6efd"),
+        ("  |  ", None, "#555555"),
+        ("auspublicexp.org", "https://auspublicexp.org/", "#0d6efd"),
+        ("  |  Australian Public Expense Tracker  |  ", None, "#555555"),
+        ("@auspublicexp", "https://x.com/auspublicexp", "#0d6efd"),
+    ]
+
+    # Build the footer from left to right, measuring each segment so the
+    # clickable text occupies exactly the same line rather than being repeated.
+    x = 0.17
+    y = 0.025
+    renderer = fig.canvas.get_renderer()
+
+    for label, url, color in segments:
+        artist = fig.text(
+            x,
+            y,
+            label,
+            ha="left",
+            va="bottom",
+            fontsize=11,
+            color=color,
+            url=url,
+        )
+        fig.canvas.draw()
+        renderer = fig.canvas.get_renderer()
+        bbox = artist.get_window_extent(renderer=renderer)
+        x += bbox.width / fig.bbox.width
+
+
+# The shared value-chart helper looks up add_standard_footer in its own module.
+# Patch it so all GrantConnect charts use the same single-line linked footer.
+chart_helpers_module.add_standard_footer = add_standard_footer_with_links
 
 
 # ============================================================
@@ -274,37 +335,27 @@ def quarter_period_text(fy_quarter):
     }[quarter]
 
 
-def make_x_post(title, total_value=None, count=None):
-    text = f"{title}.\n\n"
-
-    if total_value is not None:
-        text += f"Total reported value: ${total_value:,.0f}.\n"
-
-    if count is not None:
-        text += f"Based on {count:,} published grant awards.\n"
-
-    text += "\nSource: grants.gov.au\n#auspol"
-
-    if len(text) <= 280:
-        return text
-
-    short_text = f"{title}.\n\nSource: grants.gov.au\n#auspol"
-    return short_text[:280]
-
-
-def save_outputs(data, chart_path, title, total_value=None, count=None):
+def save_outputs(data, chart_path):
+    """Save supporting CSV data and mirror it into the website quarter folder."""
     data_path = chart_path.with_name(chart_path.stem + "_data.csv")
-    post_path = chart_path.with_name(chart_path.stem + "_post.txt")
-
     save_chart_data(data, data_path)
-    save_x_post(
-        post_path,
-        make_x_post(
-            title=title,
-            total_value=total_value,
-            count=count,
-        ),
-    )
+    mirror_file_to_website(data_path)
+
+
+def mirror_file_to_website(source_path):
+    """Copy a generated website asset into the matching website quarter folder."""
+    quarter_name = source_path.parent.name
+    website_quarter_dir = GRANTCONNECT_WEBSITE_CHART_DIR / quarter_name
+    website_quarter_dir.mkdir(parents=True, exist_ok=True)
+
+    destination = website_quarter_dir / source_path.name
+    shutil.copy2(source_path, destination)
+    print(f"Copied website asset: {destination}")
+
+
+def mirror_svg_to_website(svg_path):
+    """Backward-compatible wrapper for SVG website mirroring."""
+    mirror_file_to_website(svg_path)
 
 
 # ============================================================
@@ -321,7 +372,7 @@ def create_horizontal_count_chart(
     value_col,
     title,
     output_path,
-    xlabel="Number of published grant awards",
+    xlabel="Number of grant awards published",
     left=0.34,
     label_width=34,
     label_lines=2,
@@ -358,13 +409,17 @@ def create_horizontal_count_chart(
         fontweight="bold",
     )
 
-    add_standard_footer(fig, ax, source_text=SOURCE_TEXT)
+    add_standard_footer_with_links(fig, ax, source_text=SOURCE_TEXT)
     apply_chart_layout(fig, left=left)
 
     plt.savefig(output_path, dpi=150, bbox_inches="tight")
+    svg_path = output_path.with_suffix(".svg")
+    plt.savefig(svg_path, format="svg", bbox_inches="tight")
     plt.close()
 
     print(f"Saved chart: {output_path.name}")
+    print(f"Saved chart: {svg_path.name}")
+    mirror_svg_to_website(svg_path)
 
 
 def make_value_chart(
@@ -375,7 +430,7 @@ def make_value_chart(
     output_path,
     total_value,
     count,
-    xlabel="Reported Grant Value (AUD)",
+    xlabel="Reported Grant Award Value (AUD)",
     left=0.34,
     label_width=34,
     label_lines=2,
@@ -398,12 +453,27 @@ def make_value_chart(
         bar_color=DEFAULT_BAR_COLOR,
     )
 
+    # Generate a matching scalable SVG for the website.
+    # svg.fonttype='none' keeps chart text as text where supported.
+    svg_path = output_path.with_suffix(".svg")
+    create_horizontal_bar_chart(
+        data=data,
+        label_col=label_col,
+        value_col=value_col,
+        title=title,
+        output_path=svg_path,
+        source_text=SOURCE_TEXT,
+        xlabel=xlabel,
+        left=left,
+        label_width=label_width,
+        label_lines=label_lines,
+        bar_color=DEFAULT_BAR_COLOR,
+    )
+    mirror_svg_to_website(svg_path)
+
     save_outputs(
         data=data,
         chart_path=output_path,
-        title=title,
-        total_value=total_value,
-        count=count,
     )
 
 
@@ -436,8 +506,6 @@ def make_count_chart(
     save_outputs(
         data=data,
         chart_path=output_path,
-        title=title,
-        count=count,
     )
 
 
@@ -454,7 +522,7 @@ def generate_charts_for_quarter(df, fy_quarter):
 
     total_value = quarter_df[VALUE_COL].sum()
     grant_count = len(quarter_df)
-    title_suffix = f"{fy_quarter} — {period_text}"
+    title_suffix = f"{fy_quarter}\n{period_text}"
 
     print("\n" + "=" * 60)
     print(f"Generating GrantConnect charts for {title_suffix}")
@@ -473,7 +541,7 @@ def generate_charts_for_quarter(df, fy_quarter):
         agency_value,
         "Agency",
         VALUE_COL,
-        f"Reported Grant Value by Agency\n{title_suffix}",
+        f"Reported Value of Grant Awards by Agency\nPublished on GrantConnect — {title_suffix}",
         output_folder / "01_reported_grant_value_by_agency.png",
         total_value,
         grant_count,
@@ -490,7 +558,7 @@ def generate_charts_for_quarter(df, fy_quarter):
         category_value,
         "Category",
         VALUE_COL,
-        f"Reported Grant Value by Category\n{title_suffix}",
+        f"Reported Value of Grant Awards by Category\nPublished on GrantConnect — {title_suffix}",
         output_folder / "02_reported_grant_value_by_category.png",
         total_value,
         grant_count,
@@ -507,7 +575,7 @@ def generate_charts_for_quarter(df, fy_quarter):
         recipient_value,
         "Recipient Name",
         VALUE_COL,
-        f"Top Grant Recipients by Reported Value\n{title_suffix}",
+        f"Top Recipients by Reported Grant Award Value\nPublished on GrantConnect — {title_suffix}",
         output_folder / "03_top_grant_recipients_by_reported_value.png",
         total_value,
         grant_count,
@@ -532,7 +600,7 @@ def generate_charts_for_quarter(df, fy_quarter):
         largest_grants,
         "Grant Label",
         VALUE_COL,
-        f"Largest Individual Grant Awards\n{title_suffix}",
+        f"Largest Individual Grant Awards\nPublished on GrantConnect — {title_suffix}",
         output_folder / "04_largest_individual_grant_awards.png",
         total_value,
         grant_count,
@@ -552,7 +620,7 @@ def generate_charts_for_quarter(df, fy_quarter):
         agency_count,
         "Agency",
         "Grant Count",
-        f"Number of Grant Awards by Agency\n{title_suffix}",
+        f"Number of Grant Awards by Agency\nPublished on GrantConnect — {title_suffix}",
         output_folder / "05_number_of_grant_awards_by_agency.png",
         grant_count,
         left=0.34,
@@ -569,27 +637,31 @@ def generate_charts_for_quarter(df, fy_quarter):
         category_count,
         "Category",
         "Grant Count",
-        f"Number of Grant Awards by Category\n{title_suffix}",
+        f"Number of Grant Awards by Category\nPublished on GrantConnect — {title_suffix}",
         output_folder / "06_number_of_grant_awards_by_category.png",
         grant_count,
         left=0.36,
     )
 
-    program_value = (
+    # This is not labelled as a "program" chart because GrantConnect
+    # defines GO ID as the grant opportunity identifier while Grant Activity
+    # is an award-level field. Grouping the two therefore represents exact
+    # GO ID + Grant Activity combinations, not necessarily whole programs.
+    activity_group_value = (
         quarter_df.groupby(["GO ID", "Grant Activity"], as_index=False)[VALUE_COL]
         .sum()
         .sort_values(VALUE_COL, ascending=False)
         .head(LOCAL_TOP_N)
     )
-    program_value["Program Label"] = (
-        program_value["GO ID"] + " — " + program_value["Grant Activity"]
+    activity_group_value["Activity Group Label"] = (
+        activity_group_value["GO ID"] + " — " + activity_group_value["Grant Activity"]
     )
     make_value_chart(
-        program_value,
-        "Program Label",
+        activity_group_value,
+        "Activity Group Label",
         VALUE_COL,
-        f"Top Grant Programs by Reported Value\n{title_suffix}",
-        output_folder / "07_top_grant_programs_by_reported_value.png",
+        f"Top Grant Activity Groups by Reported Award Value\nPublished on GrantConnect — {title_suffix}",
+        output_folder / "07_top_grant_activity_groups_by_reported_value.png",
         total_value,
         grant_count,
         left=0.44,
@@ -618,11 +690,11 @@ def generate_charts_for_quarter(df, fy_quarter):
         agency_average,
         "Agency",
         "Average Grant Value",
-        f"Average Grant Award Size by Agency\n{title_suffix}",
+        f"Average Reported Grant Award Value by Agency\nPublished on GrantConnect — {title_suffix}",
         output_folder / "08_average_grant_award_size_by_agency.png",
         None,
         grant_count,
-        xlabel="Average Grant Value (AUD)",
+        xlabel="Average Reported Grant Award Value (AUD)",
         left=0.34,
     )
 
@@ -690,10 +762,13 @@ def main():
     for fy_quarter in quarters_to_generate:
         generate_charts_for_quarter(df, fy_quarter)
 
+    search_builder = Path(__file__).with_name("build_grantconnect_search_index.py")
+    if search_builder.exists():
+        print("\nUpdating the GrantConnect website search index...")
+        subprocess.run([sys.executable, str(search_builder)], check=True)
+
     print("\nDone.")
 
 
 if __name__ == "__main__":
     main()
-
-
