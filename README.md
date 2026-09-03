@@ -33,8 +33,11 @@ The four sources measure different things and their values should not be treated
 
 ### IPEA parliamentary expenditure
 
-APET's IPEA pipeline downloads official quarterly expenditure extracts and produces quarterly and Australian financial-year summaries.
+APET's IPEA pipeline downloads official quarterly expenditure extracts and produces quarterly and Australian financial-year summaries. Quarterly source filenames retain IPEA's calendar-quarter convention, while generated output folders use APET's Australian financial-year quarter labels.
 
+The public name search indexes parliamentarians displayed in person-level chart CSV files, supports annual and quarterly period filters, and links to the relevant chart. A chart appearance is not a count of expenses, transactions or payments.
+
+- [Published IPEA chart-appearance search](https://auspublicexp.org/ipea/search.php)
 - [Methodology and limitations](docs/ipea-methodology.md)
 - [IPEA scripts](scripts/ipea)
 - [Shared chart helpers](scripts/chart_helpers.py)
