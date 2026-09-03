@@ -1,7 +1,7 @@
 from pathlib import Path
-import os
 import sys
 import shutil
+import subprocess
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -38,21 +38,13 @@ AUSTENDER_SOURCE_TEXT = (
 # WEBSITE OUTPUT + CLICKABLE FOOTER
 # ============================================================
 
-AUSTENDER_WEBSITE_CHART_DIR_VALUE = os.environ.get(
-    "APET_AUSTENDER_WEBSITE_CHART_DIR"
-)
-AUSTENDER_WEBSITE_CHART_DIR = (
-    Path(AUSTENDER_WEBSITE_CHART_DIR_VALUE).expanduser()
-    if AUSTENDER_WEBSITE_CHART_DIR_VALUE
-    else None
+AUSTENDER_WEBSITE_CHART_DIR = Path(
+    r"C:\dev\australian-public-expense-tracker\website\public_html\charts\austender"
 )
 
 
 def mirror_file_to_website(source_path):
     """Copy an SVG/CSV into the matching website quarter folder."""
-    if AUSTENDER_WEBSITE_CHART_DIR is None:
-        return
-
     quarter_name = source_path.parent.name
     website_quarter_dir = AUSTENDER_WEBSITE_CHART_DIR / quarter_name
     website_quarter_dir.mkdir(parents=True, exist_ok=True)
@@ -1136,3 +1128,21 @@ for target_fy_quarter in quarters_to_generate:
     generate_quarter(target_fy_quarter)
 
 print("\nFinished generating AusTender charts for all selected quarters.")
+
+search_builder = Path(__file__).with_name("build_austender_search_index.py")
+if search_builder.is_file():
+    print("\nRebuilding the AusTender supplier and contract search index.")
+    subprocess.run(
+        [
+            sys.executable,
+            str(search_builder),
+            "--master-file",
+            str(MASTER_FILE),
+        ],
+        check=True,
+    )
+else:
+    print(f"\nSearch index builder not found: {search_builder}")
+
+
+
