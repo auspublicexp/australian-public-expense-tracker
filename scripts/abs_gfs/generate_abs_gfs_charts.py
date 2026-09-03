@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import subprocess
 import sys
 import matplotlib
 matplotlib.use("Agg")  # Safe when APET runs without a desktop display.
@@ -279,8 +280,14 @@ def main() -> None:
         expenses_by_level(levels, year, year_dir)
         print(f"Created financial-year charts: {year_dir}")
 
+    explorer_builder = Path(__file__).with_name("build_abs_gfs_explorer.py")
+    if explorer_builder.exists():
+        print("Updating the ABS GFS website topic explorer...")
+        subprocess.run([sys.executable, str(explorer_builder)], check=True)
+
     print(f"Finished ABS GFS charts for {len(years)} financial year(s).")
 
 
 if __name__ == "__main__":
     main()
+
