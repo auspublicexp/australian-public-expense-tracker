@@ -56,7 +56,7 @@ Validation can identify structural problems such as missing required fields, inv
 
 APET's IPEA pipeline downloads official quarterly expenditure extracts and produces quarterly and Australian financial-year summaries. Quarterly source filenames retain IPEA's calendar-quarter convention, while generated output folders use APET's Australian financial-year quarter labels.
 
-The public name search indexes parliamentarians displayed in person-level chart CSV files, supports annual and quarterly period filters, and links to the relevant chart. A chart appearance is not a count of expenses, transactions or payments.
+The public chart-appearance search indexes parliamentarians displayed in person-level chart CSV files. It supports party, state or territory, expense category, period, minimum reported amount and chart-type filters, with links to the relevant chart. A chart appearance is not a count of expenses, transactions or payments.
 
 - [Published IPEA chart-appearance search](https://auspublicexp.org/ipea/search.php)
 - [Methodology and limitations](docs/ipea-methodology.md)
@@ -65,24 +65,27 @@ The public name search indexes parliamentarians displayed in person-level chart 
 
 ### AusTender
 
-APET's AusTender pipeline combines official contract-notice exports, resolves amendments for historical reporting, and produces quarterly procurement summaries.
+APET's AusTender pipeline combines official contract-notice exports, resolves amendments for historical reporting, and produces quarterly procurement summaries. Its public search supports supplier, agency, contract description, CN ID, period and reported-value filters, with links to APET charts and official AusTender records.
 
+- [Published AusTender supplier and contract search](https://auspublicexp.org/austender/search.php)
 - [Methodology and limitations](docs/austender-methodology.md)
 - [AusTender scripts](scripts/austender)
 - [Shared chart helpers](scripts/chart_helpers.py)
 
 ### GrantConnect
 
-APET's GrantConnect pipeline produces quarterly and annual summaries from publicly available Australian Government grant-award exports.
+APET's GrantConnect pipeline produces quarterly and annual summaries from publicly available Australian Government grant-award exports. Its public search supports recipient, activity, agency, category, period, location, identifier and reported-value filters, with links to APET charts and official GrantConnect records.
 
+- [Published GrantConnect award search](https://auspublicexp.org/grantconnect/search.php)
 - [Methodology and limitations](docs/grantconnect-methodology.md)
 - [GrantConnect scripts](scripts/grantconnect)
 - [Shared chart helpers](scripts/chart_helpers.py)
 
 ### ABS Government Finance Statistics
 
-APET's ABS Government Finance Statistics (GFS) pipeline produces annual summaries using Australian financial years (July to June). The figures describe All Australia general government expenses on an accrual basis and are presented in current prices, original series.
+APET's ABS Government Finance Statistics (GFS) pipeline produces annual summaries using Australian financial years (July to June). The figures describe All Australia general government expenses on an accrual basis and are presented in current prices, original series. The topic explorer compares expenditure purposes and government levels across available financial years in dollars or as a share of the selected total.
 
+- [Published ABS GFS topic explorer](https://auspublicexp.org/abs-gfs/explorer.php)
 - [Methodology and limitations](docs/abs-gfs-methodology.md)
 - [ABS GFS scripts and workflow](scripts/abs_gfs)
 - [Published ABS GFS charts](https://auspublicexp.org/abs-gfs/)
