@@ -11,20 +11,28 @@ import csv
 import json
 import os
 import re
+import sys
+from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
 
+SCRIPTS_DIR = Path(__file__).resolve().parents[1]
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
+from validation_report import write_validation_report
+
+
 PROJECT_DIR = Path(__file__).parents[2]
-CHART_ROOT = Path(
-    os.getenv("APET_IPEA_CHART_ROOT", str(PROJECT_DIR / "output" / "ipea"))
-)
-INDEX_PATH = Path(
-    os.getenv(
-        "APET_IPEA_SEARCH_INDEX_PATH",
-        str(PROJECT_DIR / "output" / "ipea" / "ipea-search-index.json"),
-    )
-)
+CHART_ROOT = Path(os.getenv(
+    "APET_IPEA_CHART_ROOT",
+    PROJECT_DIR / "website" / "public_html" / "charts" / "ipea",
+))
+DATA_ROOT = Path(os.getenv("APET_IPEA_DATA_ROOT", PROJECT_DIR / "data" / "ipea"))
+INDEX_PATH = Path(os.getenv(
+    "APET_IPEA_SEARCH_INDEX",
+    PROJECT_DIR / "website" / "public_html" / "ipea" / "ipea-search-index.json",
+))
 
 
 def quarter_from_calendar(year: int, quarter: int) -> tuple[int, int, int]:
@@ -106,6 +114,17 @@ def chart_anchor(csv_path: Path) -> str:
     return f"chart-{slug}"
 
 
+def expense_category(csv_path: Path) -> str:
+    stem = re.sub(r"_data$", "", csv_path.stem)
+    if re.match(r"^0?4_", stem):
+        return "All reported expenses"
+    if re.match(r"^0?[5-9]_", stem):
+        return "Travel"
+    if re.match(r"^1[0-3]_", stem):
+        return "Office expenses"
+    return "Other"
+
+
 def first_present(fieldnames: list[str], candidates: list[str]) -> str | None:
     lookup = {field.strip().lower(): field for field in fieldnames}
     for candidate in candidates:
@@ -114,12 +133,79 @@ def first_present(fieldnames: list[str], candidates: list[str]) -> str | None:
     return None
 
 
+def normalise_name(value: str) -> str:
+    return " ".join(value.casefold().split())
+
+
+def canonical_party(value: str) -> str:
+    cleaned = " ".join(value.split())
+    aliases = {
+        "alp": "Australian Labor Party",
+        "australian labor party (alp)": "Australian Labor Party",
+        "australian labor party": "Australian Labor Party",
+        "australian greens party": "Australian Greens",
+        "liberal party": "Liberal Party of Australia",
+        "the nationals": "National Party of Australia",
+        "one nation australia": "One Nation",
+    }
+    return aliases.get(cleaned.casefold(), cleaned)
+
+
+def canonical_state(value: str) -> str:
+    cleaned = " ".join(value.upper().split())
+    return cleaned if cleaned in {"ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"} else ""
+
+
+def load_person_metadata() -> dict[tuple[str, str], dict[str, set[str]]]:
+    metadata: dict[tuple[str, str], dict[str, set[str]]] = defaultdict(
+        lambda: {"parties": set(), "states": set()}
+    )
+    if not DATA_ROOT.is_dir():
+        return metadata
+
+    for source_path in sorted(DATA_ROOT.glob("*q*_dataextract.csv")):
+        info = period_info(source_path.stem)
+        if info is None or info["type"] != "Quarterly":
+            continue
+        with source_path.open("r", encoding="utf-8-sig", newline="") as handle:
+            reader = csv.DictReader(handle)
+            fieldnames = reader.fieldnames or []
+            name_field = first_present(fieldnames, ["FullNameWithTitle", "Name"])
+            party_field = first_present(fieldnames, ["Party"])
+            state_field = first_present(fieldnames, ["StateOrTerritory"])
+            if name_field is None:
+                continue
+            for row in reader:
+                name_key = normalise_name((row.get(name_field) or "").strip())
+                if not name_key:
+                    continue
+                quarter_key = str(info["key"])
+                keys = [quarter_key]
+                match = re.fullmatch(r"quarter-(\d{4})-[1-4]", quarter_key)
+                if match:
+                    keys.append(f"annual-{match.group(1)}")
+                for period_key in keys:
+                    item = metadata[(period_key, name_key)]
+                    party = canonical_party(row.get(party_field) or "") if party_field else ""
+                    state = canonical_state(row.get(state_field) or "") if state_field else ""
+                    if party:
+                        item["parties"].add(party)
+                    if state:
+                        item["states"].add(state)
+    return metadata
+
+
 def build_index() -> dict[str, object]:
     if not CHART_ROOT.is_dir():
         raise FileNotFoundError(f"IPEA chart folder not found: {CHART_ROOT}")
 
     appearances: list[dict[str, object]] = []
     periods: dict[str, dict[str, str]] = {}
+    person_metadata = load_person_metadata()
+    parties: set[str] = set()
+    states: set[str] = set()
+    categories: set[str] = set()
+    chart_types: set[str] = set()
 
     for folder, info in choose_period_folders():
         periods[str(info["key"])] = {
@@ -149,10 +235,14 @@ def build_index() -> dict[str, object]:
                     fieldnames, ["Amount", "Amount_Current", "Increase", "Value"]
                 )
                 seen_names: set[str] = set()
+                chart_name = chart_title(csv_path)
+                category = expense_category(csv_path)
+                chart_types.add(chart_name)
+                categories.add(category)
 
                 for row in reader:
                     name = (row.get(name_field) or "").strip()
-                    normalised_name = " ".join(name.casefold().split())
+                    normalised_name = normalise_name(name)
                     if not normalised_name or normalised_name in seen_names:
                         continue
                     seen_names.add(normalised_name)
@@ -163,15 +253,31 @@ def build_index() -> dict[str, object]:
                     except ValueError:
                         amount = None
 
+                    metadata = person_metadata.get(
+                        (str(info["key"]), normalised_name),
+                        {"parties": set(), "states": set()},
+                    )
+                    row_party = canonical_party(row.get(party_field) or "") if party_field else ""
+                    party_values = set(metadata["parties"])
+                    if row_party:
+                        party_values.add(row_party)
+                    party = " / ".join(sorted(party_values))
+                    state = " / ".join(sorted(metadata["states"]))
+                    parties.update(party_values)
+                    states.update(metadata["states"])
+
                     appearances.append(
                         {
                             "name": name,
-                            "party": (row.get(party_field) or "").strip() if party_field else "",
+                            "party": party,
+                            "state": state,
                             "period_key": info["key"],
                             "period": info["label"],
                             "period_type": info["type"],
                             "period_sort": info["sort"],
-                            "chart": chart_title(csv_path),
+                            "chart": chart_name,
+                            "chart_type": chart_name,
+                            "expense_category": category,
                             "amount": amount,
                             "url": f"{info['page']}#{chart_anchor(csv_path)}",
                         }
@@ -191,6 +297,10 @@ def build_index() -> dict[str, object]:
         "description": "Names appearing in published APET IPEA charts.",
         "appearance_count": len(appearances),
         "periods": period_list,
+        "parties": sorted(parties),
+        "states": sorted(states),
+        "expense_categories": sorted(categories),
+        "chart_types": sorted(chart_types),
         "appearances": appearances,
     }
 
@@ -203,6 +313,27 @@ def main() -> None:
         encoding="utf-8",
     )
     print(f"Saved {index['appearance_count']:,} chart appearances to {INDEX_PATH}")
+    appearances = index["appearances"]
+    write_validation_report(
+        "ipea",
+        {
+            "chart_appearances": index["appearance_count"],
+            "reporting_periods": len(index["periods"]),
+            "parties_indexed": len(index["parties"]),
+            "states_and_territories_indexed": len(index["states"]),
+            "expense_categories_indexed": len(index["expense_categories"]),
+            "chart_types_indexed": len(index["chart_types"]),
+            "appearances_with_reported_amount": sum(
+                1 for item in appearances if item.get("amount") is not None
+            ),
+            "search_index": INDEX_PATH,
+        },
+        checks=[
+            "Only names appearing in published IPEA chart data were indexed.",
+            "Each indexed appearance has a reporting period and direct chart link.",
+            "Party, state, category and chart-type filter lists were rebuilt.",
+        ],
+    )
 
 
 if __name__ == "__main__":
