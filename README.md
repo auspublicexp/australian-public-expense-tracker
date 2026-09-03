@@ -29,6 +29,27 @@ The four sources measure different things and their values should not be treated
 | GrantConnect | Published grant-award value, not necessarily cash paid during the period. |
 | ABS GFS | Aggregate government expenses recorded on an accrual basis, not individual transactions or inflation-adjusted growth. |
 
+
+## Data quality and validation
+
+APET keeps downloaded source files and generated outputs outside version control. Before derived search indexes or charts are published, the processing workflows check the fields they depend on, parse dates and monetary values, and apply source-specific duplicate or amendment handling.
+
+Each source pipeline writes a small latest-run validation report to `output/validation` on the maintainer's computer:
+
+- a readable `*_latest.txt` summary
+- a structured `*_latest.json` summary
+
+These reports record the run time, coverage, record and period counts, output locations, and the checks completed. They are working records for the maintainer, are replaced by the next successful run, and are not published on the website or committed to this repository.
+
+Important source-specific limitations remain:
+
+- **IPEA:** transactions generally appear in the period when they were paid, which may differ from when travel or other activity occurred; later adjustments or repayments may also be published.
+- **AusTender:** values describe reported contract commitments over the contract's life, not cash paid in a quarter. Reporting thresholds apply, and entities can amend, vary or cancel notices.
+- **GrantConnect:** APET groups awards by publication date. Published award values are not necessarily payments made in that period, and recipient names may vary between records.
+- **ABS GFS:** figures are aggregate accrual estimates in current prices and original series. They are not individual transactions or inflation-adjusted growth, and historical estimates may be revised.
+
+Validation can identify structural problems such as missing required fields, invalid dates or duplicate identifiers. It cannot independently verify whether an official source record is factually correct. The government publisher remains authoritative, and significant findings should be checked against the linked official record.
+
 ## Published data pipelines
 
 ### IPEA parliamentary expenditure
