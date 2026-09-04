@@ -8,7 +8,7 @@ APET is an independent, politically neutral project. It does not advocate for or
 
 ## Current coverage
 
-The repository documents processing pipelines for parliamentary expenditure, Australian Government procurement, grant-award data, and Australian Government Finance Statistics.
+The repository documents processing pipelines for parliamentary expenditure, Australian Government procurement, Australian Government grant awards, Australian Research Council project allocations, and Australian Government Finance Statistics.
 
 Official sources:
 
@@ -16,17 +16,19 @@ Official sources:
 - [IPEA datasets on data.gov.au](https://data.gov.au/data/organization/ipea)
 - [AusTender](https://www.tenders.gov.au/)
 - [GrantConnect](https://www.grants.gov.au/)
+- [Australian Research Council Grants Search](https://dataportal.arc.gov.au/NCGP/Web/Grant/Grants)
 - [Australian Bureau of Statistics — Government](https://www.abs.gov.au/statistics/economy/government)
 
 ## Understanding the figures
 
-The four sources measure different things and their values should not be treated as interchangeable.
+The five sources measure different things and their values should not be treated as interchangeable.
 
 | Dataset | What the value represents |
 | --- | --- |
 | IPEA | Reported parliamentary expenses for the relevant reporting period. |
 | AusTender | Reported contract value, not necessarily cash paid during the period. |
 | GrantConnect | Published grant-award value, not necessarily cash paid during the period. |
+| ARC Grants | Whole-of-project ARC allocation grouped by scheduled calendar-year commencement, not cash paid in that year. |
 | ABS GFS | Aggregate government expenses recorded on an accrual basis, not individual transactions or inflation-adjusted growth. |
 
 
@@ -46,6 +48,7 @@ Important source-specific limitations remain:
 - **IPEA:** transactions generally appear in the period when they were paid, which may differ from when travel or other activity occurred; later adjustments or repayments may also be published.
 - **AusTender:** values describe reported contract commitments over the contract's life, not cash paid in a quarter. Reporting thresholds apply, and entities can amend, vary or cancel notices.
 - **GrantConnect:** APET groups awards by publication date. Published award values are not necessarily payments made in that period, and recipient names may vary between records.
+- **ARC Grants:** values are whole-of-project allocations, including post-award variations, grouped by scheduled calendar commencement year. ARC projects can also appear in GrantConnect, so the two sources must not be added together.
 - **ABS GFS:** figures are aggregate accrual estimates in current prices and original series. They are not individual transactions or inflation-adjusted growth, and historical estimates may be revised.
 
 Validation can identify structural problems such as missing required fields, invalid dates or duplicate identifiers. It cannot independently verify whether an official source record is factually correct. The government publisher remains authoritative, and significant findings should be checked against the linked official record.
@@ -81,6 +84,18 @@ APET's GrantConnect pipeline produces quarterly and annual summaries from public
 - [GrantConnect scripts](scripts/grantconnect)
 - [Shared chart helpers](scripts/chart_helpers.py)
 
+### Australian Research Council grants
+
+APET's ARC pipeline downloads the public National Competitive Grants Program Grants Search API, preserves the raw paginated responses, normalises one row per project, validates identifiers and coverage, and produces overview and calendar-year charts.
+
+ARC is organised by scheduled calendar commencement year because the source does not provide comparable financial-year cash-payment dates. Values represent whole-of-project allocations rather than money paid during the displayed year. Discovery supports fundamental research and researchers; Linkage supports collaborative research, partnerships and research infrastructure.
+
+- [Published ARC grants charts](https://auspublicexp.org/arc-grants/)
+- [Methodology and limitations](docs/arc-grants-methodology.md)
+- [ARC scripts and workflow](scripts/arc_grants)
+- [Official ARC Grants Search](https://dataportal.arc.gov.au/NCGP/Web/Grant/Grants)
+- [Official ARC grants dataset information](https://www.arc.gov.au/funding-research/funding-outcomes/grants-dataset)
+
 ### ABS Government Finance Statistics
 
 APET's ABS Government Finance Statistics (GFS) pipeline produces annual summaries using Australian financial years (July to June). The figures describe All Australia general government expenses on an accrual basis and are presented in current prices, original series. The topic explorer compares expenditure purposes and government levels across available financial years in dollars or as a share of the selected total.
@@ -97,6 +112,7 @@ APET's ABS Government Finance Statistics (GFS) pipeline produces annual summarie
 scripts/
 ├── chart_helpers.py
 ├── abs_gfs/
+├── arc_grants/
 ├── austender/
 ├── grantconnect/
 └── ipea/
