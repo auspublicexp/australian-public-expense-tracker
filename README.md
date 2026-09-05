@@ -124,8 +124,9 @@ APET's ABS Government Finance Statistics (GFS) pipeline produces annual summarie
 
 ### Public hospital funding
 
-APET downloads official National Health Funding Body monthly cash-payment data, preserves and validates the source files, and produces long-term and annual financial-year charts. The public presentation emphasises trends and year-to-year changes rather than repeating very similar quarterly rankings.
+APET downloads official National Health Funding Body monthly cash-payment data, preserves and validates the source files, and produces long-term and annual financial-year charts. The public explorer supports jurisdiction, financial period, funding method, service category, value, share and period-to-period change filters. Complete jurisdiction totals remain separate from service-category components because the latter omit some payment types.
 
+- [Published public-hospital funding explorer](https://auspublicexp.org/hospital-funding/explorer.php)
 - [Published public-hospital funding charts](https://auspublicexp.org/hospital-funding/)
 - [Public-hospital funding scripts and notes](scripts/public_hospital_funding)
 - [Official source dataset](https://data.gov.au/data/dataset/c4afb0c6-624b-4f4e-865d-14af55c6a311)
@@ -150,10 +151,11 @@ APET normalises the Department of Health, Disability and Ageing's quarterly Medi
 
 APET's DFAT pipeline downloads the official IATI Activity File through data.gov.au, preserves the raw XML and code lists, normalises transaction-level records, validates the result and produces overview and annual Australian financial-year charts. The charts use reported type-3 disbursements rather than commitments, budgets or whole-of-project investment values.
 
-The current IATI file contains recent financial years and dates its transactions at financial-year end. APET therefore publishes annual—not quarterly—charts. Country-only charts exclude regional and unspecified transactions; total and sector charts retain them.
+The current IATI file contains recent financial years and dates its transactions at financial-year end. APET therefore publishes annual—not quarterly—charts. Country-only charts exclude regional and unspecified transactions; total and sector charts retain them. The public search groups transactions by activity and financial year and supports activity, country, region, sector, implementing organisation, status and reported-value filters.
 
 - [Methodology and limitations](docs/dfat-foreign-aid-methodology.md)
 - [DFAT foreign-aid scripts](scripts/dfat_foreign_aid)
+- [Published foreign-aid activity search](https://auspublicexp.org/foreign-aid/search.php)
 - [Published foreign-aid charts](https://auspublicexp.org/foreign-aid/)
 - [AusDevPortal downloads](https://adp.dfat.gov.au/data-downloads)
 - [Official DFAT IATI Activity File](https://data.gov.au/data/dataset/dfat-australia-iati-activity-file)

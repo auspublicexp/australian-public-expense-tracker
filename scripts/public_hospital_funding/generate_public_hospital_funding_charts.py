@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import argparse
 import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 import matplotlib
@@ -197,6 +199,9 @@ def main():
         position = available.index(year)
         annual_charts(states, categories, year, available[position - 1] if position else None,
                       args.output_root, args.logo, args.website_output_root)
+    explorer_builder = script_dir / "build_public_hospital_funding_explorer_index.py"
+    if explorer_builder.exists():
+        subprocess.run([sys.executable, str(explorer_builder), "--data-dir", str(args.data_dir)], check=True)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@ from __future__ import annotations
 import argparse
 import shutil
 from pathlib import Path
+import subprocess
+import sys
 
 import matplotlib
 matplotlib.use("Agg")
@@ -154,6 +156,10 @@ def main() -> None:
     print(f"Generated overview charts and {len(years)} annual periods.")
     if not args.no_website_copy:
         print(f"Copied {copied} website-ready SVG/CSV files to: {args.website_dir}")
+    search_builder = Path(__file__).with_name("build_dfat_foreign_aid_search_index.py")
+    if search_builder.exists():
+        print("\nUpdating the foreign-aid website search index...")
+        subprocess.run([sys.executable, str(search_builder), "--input-file", str(args.data_file)], check=True)
 
 
 if __name__ == "__main__":
