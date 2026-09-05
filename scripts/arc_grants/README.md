@@ -21,6 +21,13 @@ Default outputs, relative to the repository root:
 - `output/validation/arc_grants_latest.{txt,json}` — latest validation report
 
 The chart generator also copies website-ready SVG and CSV files when a compatible APET website chart directory is available.
+It also rebuilds the ARC website search index. The index is split into one JSON file per
+commencement year under `website/public_html/arc-grants/search-data`, so the browser only
+downloads the years selected by a visitor. To rebuild only the search files, run:
+
+```powershell
+python .\build_arc_grants_search_index.py
+```
 
 ## Interpretation
 
@@ -31,4 +38,3 @@ The source groups projects by calendar funding commencement year. The current in
 ARC grants may also appear in GrantConnect, so ARC and GrantConnect totals must not be added together.
 
 Official source: https://www.arc.gov.au/funding-research/funding-outcomes/grants-dataset
-

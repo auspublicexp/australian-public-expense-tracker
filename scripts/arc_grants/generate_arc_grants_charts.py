@@ -4,6 +4,8 @@ from __future__ import annotations
 import argparse
 from datetime import datetime
 from pathlib import Path
+import subprocess
+import sys
 
 import matplotlib
 matplotlib.use("Agg")
@@ -144,9 +146,12 @@ def main():
     args.output_root.mkdir(parents=True, exist_ok=True)
     overview(data[data.funding_commencement_year.isin(completed)], args.output_root, args.logo)
     for year in years: calendar_year(data, year, args.output_root, args.logo)
+    search_builder = Path(__file__).with_name("build_arc_grants_search_index.py")
+    if search_builder.exists():
+        print("\nUpdating the ARC website search index...")
+        subprocess.run([sys.executable, str(search_builder), "--input-file", str(args.data_file)], check=True)
 
 
 if __name__ == "__main__":
     main()
-
 

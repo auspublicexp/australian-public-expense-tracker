@@ -18,6 +18,9 @@ Use `--force` with the fetcher to replace the cached XML and IATI code lists. De
 - `output/foreign_aid` — overview and annual financial-year charts
 - `output/validation/dfat_foreign_aid_latest.{txt,json}` — latest validation report
 - `website/public_html/charts/foreign_aid` — website-ready SVG and chart-data CSV copies, when the website tree is available
+- `website/public_html/foreign-aid/search-data` — compact financial-year search indexes used by the website
+
+The chart generator also runs `build_dfat_foreign_aid_search_index.py`, so the website search data is refreshed whenever the charts are regenerated. The search index groups transaction rows by aid activity and financial year; this avoids presenting repeated transaction rows as separate projects.
 
 ## Interpretation
 

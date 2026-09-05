@@ -70,3 +70,9 @@ charts in the main chart folder and annual comparison folders containing:
 
 The normalized files still retain monthly records, so quarters and other custom
 periods can be analysed later without downloading the source data again.
+
+The chart generator also runs `build_public_hospital_funding_explorer_index.py`.
+This creates compact year-by-year JSON files in
+`website/public_html/hospital-funding/explorer-data` for the website explorer.
+The explorer keeps complete state totals separate from the service-category
+components, which do not cover every payment type.
