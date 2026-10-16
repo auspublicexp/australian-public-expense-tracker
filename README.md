@@ -8,7 +8,7 @@ APET is an independent, politically neutral project. It does not advocate for or
 
 ## Current coverage
 
-The repository documents processing pipelines for parliamentary expenditure, procurement, grant awards, research grants, government finance, public-hospital funding, subsidised medicines, Medicare benefits and Australian foreign-aid disbursements.
+The repository documents processing pipelines for parliamentary expenditure, procurement, grant awards, research grants, government finance, public-hospital funding, subsidised medicines, Medicare benefits, Australian foreign-aid disbursements and NDIS payments.
 
 Official sources:
 
@@ -23,6 +23,8 @@ Official sources:
 - [Medicare statistics collection](https://www.health.gov.au/resources/collections/medicare-statistics-collection)
 - [DFAT AusDevPortal data downloads](https://adp.dfat.gov.au/data-downloads)
 - [DFAT Australia IATI Activity File](https://data.gov.au/data/dataset/dfat-australia-iati-activity-file)
+
+- [NDIA payments datasets](https://dataresearch.ndis.gov.au/datasets/payments-datasets)
 
 ## Understanding the figures
 
@@ -39,21 +41,24 @@ The sources measure different things and their values should not be treated as i
 | PBS and RPBS | Australian Government contributions to subsidised prescription costs, not total prescription cost. |
 | Medicare MBS | Medicare benefits paid for claims processed, not total Australian health expenditure. |
 | DFAT Foreign Aid | IATI type-3 disbursements reported by financial year, excluding commitments and budgets. |
-
+| NDIS | Recorded payments over the preceding 12 months, grouped by participant residence and support type; not plan budgets or the full cost of administering the scheme. |
 
 ## Data quality and validation
 
 APET keeps downloaded source files and generated outputs outside version control. Before derived search indexes or charts are published, the processing workflows check the fields they depend on, parse dates and monetary values, and apply source-specific duplicate or amendment handling.
 
-Each source pipeline writes a small latest-run validation report to `output/validation` on the maintainer's computer:
+The established source pipelines write a small latest-run validation report to `output/validation` on the maintainer's computer:
 
 - a readable `*_latest.txt` summary
 - a structured `*_latest.json` summary
 
 These reports record the run time, coverage, record and period counts, output locations, and the checks completed. They are working records for the maintainer, are replaced by the next successful run, and are not published on the website or committed to this repository.
 
+The NDIS build also publishes source checksums and year-specific validation JSON alongside its annual pages. These disclose differences between the payments dataset and the corresponding quarterly-report tables.
+
 Important source-specific limitations remain:
 
+- **NDIS:** June snapshots cover a full financial year. Successive quarterly snapshots overlap and must not be summed. State figures reflect participant residence, not state-government spending. Suppression, overlapping participant counts, nominal prices and unreconciled source differences are documented in the [NDIS methodology](docs/ndis-methodology.md).
 - **IPEA:** transactions generally appear in the period when they were paid, which may differ from when travel or other activity occurred; later adjustments or repayments may also be published.
 - **AusTender:** values describe reported contract commitments over the contract's life, not cash paid in a quarter. Reporting thresholds apply, and entities can amend, vary or cancel notices.
 - **GrantConnect:** APET groups awards by publication date. Published award values are not necessarily payments made in that period, and recipient names may vary between records.
@@ -160,6 +165,17 @@ The current IATI file contains recent financial years and dates its transactions
 - [AusDevPortal downloads](https://adp.dfat.gov.au/data-downloads)
 - [Official DFAT IATI Activity File](https://data.gov.au/data/dataset/dfat-australia-iati-activity-file)
 
+### National Disability Insurance Scheme payments
+
+APET now covers FY2023–24, FY2024–25 and FY2025–26 using the NDIA June payments snapshots. Annual pages provide national totals, state and territory amounts, support categories, source links and CSV/JSON downloads.
+
+The chart explorer provides 15 charts: national annual totals, three annual category breakdowns, three category-change comparisons, and eight state and territory trends. Each chart has PNG, SVG and CSV downloads. Values are not adjusted for inflation or participant numbers; state panels use individually labelled scales starting at zero.
+
+- [Published NDIS payments and annual pages](https://auspublicexp.org/ndis/)
+- [Published NDIS chart explorer](https://auspublicexp.org/ndis/charts.php)
+- [Methodology and limitations](docs/ndis-methodology.md)
+- [NDIS scripts and reproduction instructions](scripts/ndis)
+
 ## Repository structure
 
 ```text
@@ -172,6 +188,7 @@ scripts/
 ├── grantconnect/
 ├── ipea/
 ├── mbs/
+├── ndis/
 ├── pbs/
 └── public_hospital_funding/
 ```
@@ -209,3 +226,4 @@ Questions, corrections and reproducibility issues can be raised through this rep
 ## Licence
 
 This project's original code is available under the [MIT License](LICENSE). Government source datasets remain subject to the terms specified by their original publishers.
+
