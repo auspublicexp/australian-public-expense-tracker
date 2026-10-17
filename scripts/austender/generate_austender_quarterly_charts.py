@@ -903,6 +903,14 @@ def generate_quarter(target_fy_quarter):
         target_fy_quarter
     )
 
+    # Weekly exports may end before the quarter closes. Keep that visible
+    # in standalone charts as well as the website page.
+    export_ends = [pd.to_datetime(p.stem.split(" to ")[-1], format="%d-%b-%y")
+                   for p in (PROJECT_DIR / "data" / "austender").glob("*.xlsx")
+                   if " to " in p.stem]
+    if export_ends and max(export_ends).date() < get_quarter_end_date(target_fy_quarter).date():
+        title_prefix += " — partial, exports through " + max(export_ends).strftime("%d %b %Y")
+
     # ============================================================
     # VALIDATION OUTPUT
     # ============================================================
@@ -1143,6 +1151,4 @@ if search_builder.is_file():
     )
 else:
     print(f"\nSearch index builder not found: {search_builder}")
-
-
 
