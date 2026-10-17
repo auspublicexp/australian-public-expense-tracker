@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import date, timedelta
 import shutil
 import subprocess
 import sys
@@ -49,7 +50,7 @@ GRANTCONNECT_WEBSITE_CHART_DIR = Path(
 # Files inside archive_incomplete are ignored because this glob is not recursive.
 INPUT_FILE_PATTERN = "grantconnect_FY????-??_Q?_????-??*.xlsx"
 
-# Use None to regenerate every quarter available in the monthly files.
+# Use None to regenerate every eligible quarter available in the exports.
 # To generate one quarter only, use—for example—"FY2024-25_Q3".
 TARGET_FY_QUARTER = None
 COMPLETE_QUARTERS_ONLY = True
@@ -168,7 +169,55 @@ def read_grantconnect_excel(file_path):
             f"Could not find the GrantConnect header row in {file_path.name}."
         )
 
-    return pd.read_excel(file_path, header=header_row)
+    result = pd.read_excel(file_path, header=header_row)
+    result.attrs["export_coverage"] = read_export_coverage(preview, file_path.name)
+    return result
+
+
+
+def read_export_coverage(preview, file_name):
+    """Use the export search criteria, not observed award dates, as coverage."""
+    criteria = {
+        str(row.iloc[0]).strip(): str(row.iloc[1]).strip()
+        for _, row in preview.iterrows()
+        if len(row) >= 2 and pd.notna(row.iloc[0])
+    }
+    if criteria.get("Date Type") != "Publish Date":
+        raise ValueError(f"{file_name}: expected Publish Date export criteria.")
+    try:
+        start_text, end_text = criteria["Date Range"].split(" to ")
+        start = pd.to_datetime(start_text, format="%d-%b-%Y").date()
+        end = pd.to_datetime(end_text, format="%d-%b-%Y").date()
+        if pd.isna(start) or pd.isna(end) or start > end:
+            raise ValueError("Invalid date range")
+    except (KeyError, ValueError) as exc:
+        raise ValueError(f"{file_name}: cannot verify export date coverage.") from exc
+    return start, end
+
+
+def quarter_incomplete_reason(fy_quarter, coverage, today=None):
+    """Require a closed quarter and gap-free export coverage of every day."""
+    if today is None:
+        today = pd.Timestamp.now(tz="Australia/Sydney").date()
+    fy_start = int(fy_quarter[2:6])
+    quarter = int(fy_quarter.rsplit("_Q", 1)[1])
+    start_month = {1: 7, 2: 10, 3: 1, 4: 4}[quarter]
+    start_year = fy_start if quarter <= 2 else fy_start + 1
+    start = date(start_year, start_month, 1)
+    next_month = start_month + 3
+    end = date(start_year + (next_month > 12), (next_month - 1) % 12 + 1, 1) - timedelta(days=1)
+    if today <= end:
+        return f"quarter ends {end}; it is still in progress"
+    next_uncovered = start
+    for range_start, range_end in sorted(coverage):
+        if range_end < next_uncovered:
+            continue
+        if range_start > next_uncovered:
+            break
+        next_uncovered = range_end + timedelta(days=1)
+        if next_uncovered > end:
+            return None
+    return f"export coverage is missing from {next_uncovered}; refresh the source exports"
 
 
 def standardise_columns(df, file_name):
@@ -225,11 +274,13 @@ def standardise_columns(df, file_name):
 def load_and_validate_monthly_files():
     files = find_monthly_excel_files(GRANTCONNECT_DATA_DIR)
     frames = []
+    coverage = []
 
     print("Loading monthly GrantConnect files:")
 
     for file_path in files:
         file_df = read_grantconnect_excel(file_path)
+        coverage.append(file_df.attrs["export_coverage"])
         file_df = standardise_columns(file_df, file_path.name)
 
         row_count = len(file_df)
@@ -283,6 +334,7 @@ def load_and_validate_monthly_files():
     print(f"Exact duplicate rows removed: {duplicates_removed:,}")
     print(f"Validated grant awards: {len(combined):,}")
 
+    combined.attrs["export_coverage"] = coverage
     return combined
 
 
@@ -541,7 +593,7 @@ def generate_charts_for_quarter(df, fy_quarter):
         agency_value,
         "Agency",
         VALUE_COL,
-        f"Reported Value of Grant Awards by Agency\nPublished on GrantConnect — {title_suffix}",
+        f"Reported Value of Grant Awards Administered by Agency\nPublished on GrantConnect — {title_suffix}",
         output_folder / "01_reported_grant_value_by_agency.png",
         total_value,
         grant_count,
@@ -620,7 +672,7 @@ def generate_charts_for_quarter(df, fy_quarter):
         agency_count,
         "Agency",
         "Grant Count",
-        f"Number of Grant Awards by Agency\nPublished on GrantConnect — {title_suffix}",
+        f"Number of Grant Awards Administered by Agency\nPublished on GrantConnect — {title_suffix}",
         output_folder / "05_number_of_grant_awards_by_agency.png",
         grant_count,
         left=0.34,
@@ -690,7 +742,7 @@ def generate_charts_for_quarter(df, fy_quarter):
         agency_average,
         "Agency",
         "Average Grant Value",
-        f"Average Reported Grant Award Value by Agency\nPublished on GrantConnect — {title_suffix}",
+        f"Average Reported Grant Award Value Administered by Agency\nPublished on GrantConnect — {title_suffix}",
         output_folder / "08_average_grant_award_size_by_agency.png",
         None,
         grant_count,
@@ -705,6 +757,7 @@ def generate_charts_for_quarter(df, fy_quarter):
 
 def main():
     df = load_and_validate_monthly_files()
+    coverage = df.attrs["export_coverage"]
     df = add_financial_quarter_columns(df)
 
     available_quarters = sorted(df["FY Quarter"].unique())
@@ -721,39 +774,18 @@ def main():
                 f"Available quarters: {available_quarters}"
             )
 
-        quarters_to_generate = [TARGET_FY_QUARTER]
-
+        candidates = [TARGET_FY_QUARTER]
     else:
-        quarters_to_generate = []
+        candidates = available_quarters
 
-        expected_months = {
-            "Q1": {7, 8, 9},
-            "Q2": {10, 11, 12},
-            "Q3": {1, 2, 3},
-            "Q4": {4, 5, 6},
-        }
-
-        for fy_quarter in available_quarters:
-            quarter_name = fy_quarter.rsplit("_", 1)[1]
-
-            months_found = set(
-                df.loc[
-                    df["FY Quarter"] == fy_quarter,
-                    DATE_COL,
-                ].dt.month.unique()
-            )
-
-            required_months = expected_months[quarter_name]
-
-            if COMPLETE_QUARTERS_ONLY and months_found != required_months:
-                print(
-                    f"Skipping incomplete quarter {fy_quarter}: "
-                    f"months found {sorted(months_found)}, "
-                    f"expected {sorted(required_months)}"
-                )
+    quarters_to_generate = []
+    for fy_quarter in candidates:
+        if COMPLETE_QUARTERS_ONLY:
+            reason = quarter_incomplete_reason(fy_quarter, coverage)
+            if reason:
+                print(f"Skipping incomplete quarter {fy_quarter}: {reason}")
                 continue
-
-            quarters_to_generate.append(fy_quarter)
+        quarters_to_generate.append(fy_quarter)
 
     print("\nQuarters that will be generated:")
     for fy_quarter in quarters_to_generate:

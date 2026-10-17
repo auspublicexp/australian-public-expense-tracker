@@ -521,7 +521,7 @@ def generate_charts_for_year(df, financial_year):
         agency_value,
         "Agency",
         VALUE_COL,
-        f"Reported Value of Grant Awards by Agency\nPublished on GrantConnect — {title_suffix}",
+        f"Reported Value of Grant Awards Administered by Agency\nPublished on GrantConnect — {title_suffix}",
         output_folder / "01_reported_grant_value_by_agency.png",
         total_value,
         grant_count,
@@ -600,7 +600,7 @@ def generate_charts_for_year(df, financial_year):
         agency_count,
         "Agency",
         "Grant Count",
-        f"Number of Grant Awards by Agency\nPublished on GrantConnect — {title_suffix}",
+        f"Number of Grant Awards Administered by Agency\nPublished on GrantConnect — {title_suffix}",
         output_folder / "05_number_of_grant_awards_by_agency.png",
         grant_count,
         left=0.34,
@@ -670,7 +670,7 @@ def generate_charts_for_year(df, financial_year):
         agency_average,
         "Agency",
         "Average Grant Value",
-        f"Average Reported Grant Award Value by Agency\nPublished on GrantConnect — {title_suffix}",
+        f"Average Reported Grant Award Value Administered by Agency\nPublished on GrantConnect — {title_suffix}",
         output_folder / "08_average_grant_award_size_by_agency.png",
         None,
         grant_count,
@@ -753,3 +753,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
