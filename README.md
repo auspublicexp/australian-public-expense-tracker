@@ -121,6 +121,9 @@ ARC is organised by scheduled calendar commencement year because the source does
 
 APET's ABS Government Finance Statistics (GFS) pipeline produces annual summaries using Australian financial years (July to June). The figures describe All Australia general government expenses on an accrual basis and are presented in current prices, original series. The topic explorer compares expenditure purposes and government levels across available financial years in dollars or as a share of the selected total.
 
+The separate FY2025–26 quarterly-derived workflow sums all four quarters from the June 2026 source vintage. It reports revenue, expenses, net operating balance and selected taxes without merging these results into the annual purpose or government-level series.
+
+- [Published FY2025–26 quarterly-derived summary](https://auspublicexp.org/abs-gfs/fy2025-26-quarterly.php)
 - [Published ABS GFS topic explorer](https://auspublicexp.org/abs-gfs/explorer.php)
 - [Methodology and limitations](docs/abs-gfs-methodology.md)
 - [ABS GFS scripts and workflow](scripts/abs_gfs)
@@ -226,4 +229,5 @@ Questions, corrections and reproducibility issues can be raised through this rep
 ## Licence
 
 This project's original code is available under the [MIT License](LICENSE). Government source datasets remain subject to the terms specified by their original publishers.
+
 
