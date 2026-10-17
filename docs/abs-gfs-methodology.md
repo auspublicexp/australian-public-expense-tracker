@@ -45,3 +45,10 @@ These measures should not be added together or treated as directly equivalent.
 ## Authority and corrections
 
 The Australian Bureau of Statistics remains the authoritative source. If an APET chart differs from the official publication, readers should rely on the ABS release and report the discrepancy through the repository's [Issues](https://github.com/auspublicexp/australian-public-expense-tracker/issues) section.
+
+## FY2025–26 quarterly-derived extension
+
+The separate `fetch_quarterly_gfs.py` and `quarterly_gfs.py` workflow uses all four quarters from the June 2026 publication. It retains source URLs, retrieval times and SHA-256 hashes, and validates sector, units, quarter order, unique measures and published totals. `test_quarterly_gfs.py` exercises reconciliation and rejection of invalid or mixed-vintage inputs.
+
+These results stay in `FY2025-26_quarterly_derived`, separate from annual output. They do not provide annual expense-by-purpose or separate government-level breakdowns. Selected income-tax, company-tax and GST figures come from the ABS insights article and are labelled as published totals. All figures are current-price, original-series, general-government accrual estimates. See the [workflow instructions](../scripts/abs_gfs/README.md) and [published summary](https://auspublicexp.org/abs-gfs/fy2025-26-quarterly.php).
+

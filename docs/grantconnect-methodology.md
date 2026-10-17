@@ -91,3 +91,7 @@ python scripts/grantconnect/generate_grantconnect_quarterly_charts.py
 To point the reconciliation script at a non-standard downloads folder, set the `APET_DOWNLOAD_DIR` environment variable before running it.
 
 Website asset mirroring is disabled by default. Set `APET_GRANTCONNECT_WEBSITE_CHART_DIR` when the annual script should also copy generated SVG and CSV files into a website project.
+
+## Complete-quarter coverage checks
+
+The quarterly generator reads each workbook's export criteria, requires `Date Type: Publish Date`, and parses its `Date Range`. A quarter is eligible only after it has closed and the combined export ranges cover every day through quarter end without gaps. Observed award dates or the presence of three monthly files do not establish completeness. Incomplete quarters are skipped with the missing-coverage reason. Refresh the exports and rerun the generator and dependent search index. Agency chart labels describe awards administered by the agency, not payments received by it.

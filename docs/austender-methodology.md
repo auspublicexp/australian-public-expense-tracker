@@ -67,3 +67,7 @@ python scripts/austender/generate_austender_quarterly_charts.py
 ```
 
 Website asset mirroring is disabled by default. Set `APET_AUSTENDER_WEBSITE_CHART_DIR` if generated SVG and CSV files should also be copied into a website project.
+
+## Partial export coverage labels
+
+The quarterly chart generator marks a period as partial when the latest end date encoded in weekly XLSX export filenames precedes the quarter end. The warning includes that export date so the coverage limit remains visible on standalone charts. This is an end-date warning, not a gap-free completeness test: it does not prove that every intervening day or notice was collected. Reported contract values remain commitments, not quarterly cash expenditure.
