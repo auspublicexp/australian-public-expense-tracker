@@ -44,13 +44,16 @@ AUSTENDER_WEBSITE_CHART_DIR = Path(
 
 
 def mirror_file_to_website(source_path):
-    """Copy an SVG/CSV into the matching website quarter folder."""
+    """Copy a PNG/SVG/CSV into the matching website quarter folder."""
     quarter_name = source_path.parent.name
     website_quarter_dir = AUSTENDER_WEBSITE_CHART_DIR / quarter_name
     website_quarter_dir.mkdir(parents=True, exist_ok=True)
 
     destination = website_quarter_dir / source_path.name
     shutil.copy2(source_path, destination)
+    if source_path.suffix.lower() == ".svg":
+        png_path = source_path.with_suffix(".png")
+        shutil.copy2(png_path, destination.with_suffix(".png"))
     print(f"Copied website asset: {destination}")
 
 
@@ -1151,4 +1154,3 @@ if search_builder.is_file():
     )
 else:
     print(f"\nSearch index builder not found: {search_builder}")
-

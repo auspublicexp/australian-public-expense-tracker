@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 from datetime import datetime
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 
@@ -131,6 +132,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-file", type=Path, default=project_root / "data/arc_grants/normalized/arc_grants_projects.csv")
     parser.add_argument("--output-root", type=Path, default=project_root / "output/arc_grants")
+    parser.add_argument("--website-dir", type=Path, default=project_root / "website/public_html/charts/arc_grants")
     parser.add_argument("--calendar-year", type=int)
     parser.add_argument("--all-calendar-years", action="store_true")
     parser.add_argument("--include-current-year", action="store_true",
@@ -146,6 +148,11 @@ def main():
     args.output_root.mkdir(parents=True, exist_ok=True)
     overview(data[data.funding_commencement_year.isin(completed)], args.output_root, args.logo)
     for year in years: calendar_year(data, year, args.output_root, args.logo)
+    for source in args.output_root.rglob("*"):
+        if source.is_file() and source.suffix.lower() in {".png", ".svg", ".csv"}:
+            destination = args.website_dir / source.relative_to(args.output_root)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, destination)
     search_builder = Path(__file__).with_name("build_arc_grants_search_index.py")
     if search_builder.exists():
         print("\nUpdating the ARC website search index...")
@@ -154,4 +161,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

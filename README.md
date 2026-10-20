@@ -214,6 +214,12 @@ Where practical, each published chart or table will identify:
 
 The official government publisher remains the authoritative source. APET does not alter source records, estimate unreported expenditure or present its calculations as official government statistics.
 
+## Reusable chart downloads
+
+Dataset chart pages offer **PNG images**, **SVG images** and **CSV data** where the corresponding files are available. PNGs make it easier to share charts online with their titles, reporting periods, units and source notes intact. The NDIS chart page provided the pattern for extending these downloads across the other nine dataset collections.
+
+Chart builders publish PNGs alongside their existing SVG/CSV exports during normal refreshes. See the [chart-download implementation and validation record](docs/chart-downloads.md) for the reusable PHP helper, page integration, mobile layout and checks completed on 19 October 2026. Generated chart images, source datasets and local validation reports remain outside version control.
+
 ## Reproducibility
 
 This repository includes documented data-processing scripts, source links, chart-generation code, methodology notes, and software requirements. Large source datasets are not stored here; users should obtain them from the official publisher.
@@ -229,5 +235,3 @@ Questions, corrections and reproducibility issues can be raised through this rep
 ## Licence
 
 This project's original code is available under the [MIT License](LICENSE). Government source datasets remain subject to the terms specified by their original publishers.
-
-

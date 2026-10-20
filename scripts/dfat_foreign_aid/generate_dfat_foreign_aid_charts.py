@@ -125,7 +125,7 @@ def annual_charts(data, financial_year, output_root, logo):
 def copy_website_assets(output_root: Path, website_dir: Path) -> int:
     copied = 0
     for source in output_root.rglob("*"):
-        if source.is_file() and (source.suffix.lower() == ".svg" or source.name.endswith("_data.csv")):
+        if source.is_file() and (source.suffix.lower() in {".png", ".svg"} or source.name.endswith("_data.csv")):
             destination = website_dir / source.relative_to(output_root)
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, destination); copied += 1
@@ -155,7 +155,7 @@ def main() -> None:
     copied = 0 if args.no_website_copy else copy_website_assets(args.output_root, args.website_dir)
     print(f"Generated overview charts and {len(years)} annual periods.")
     if not args.no_website_copy:
-        print(f"Copied {copied} website-ready SVG/CSV files to: {args.website_dir}")
+        print(f"Copied {copied} website-ready PNG/SVG/CSV files to: {args.website_dir}")
     search_builder = Path(__file__).with_name("build_dfat_foreign_aid_search_index.py")
     if search_builder.exists():
         print("\nUpdating the foreign-aid website search index...")

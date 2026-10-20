@@ -68,7 +68,7 @@ IPEA_WEBSITE_CHART_DIR = Path(_website_chart_dir) if _website_chart_dir else Non
 
 
 def mirror_file_to_website(source_path):
-    """Copy an SVG/CSV into the matching website chart folder."""
+    """Copy a PNG/SVG/CSV into the matching website chart folder."""
     if IPEA_WEBSITE_CHART_DIR is None:
         return
 
@@ -78,6 +78,9 @@ def mirror_file_to_website(source_path):
 
     destination = website_period_dir / source_path.name
     shutil.copy2(source_path, destination)
+    if source_path.suffix.lower() == ".svg":
+        png_path = source_path.with_suffix(".png")
+        shutil.copy2(png_path, destination.with_suffix(".png"))
     print(f"Copied website asset: {destination}")
 
 
@@ -695,7 +698,7 @@ IPEA_WEBSITE_CHART_DIR = (
 
 
 def mirror_file_to_website(source_path):
-    """Copy an SVG/CSV into the matching website chart folder."""
+    """Copy a PNG/SVG/CSV into the matching website chart folder."""
     if IPEA_WEBSITE_CHART_DIR is None:
         return
 
@@ -705,6 +708,9 @@ def mirror_file_to_website(source_path):
 
     destination = website_period_dir / source_path.name
     shutil.copy2(source_path, destination)
+    if source_path.suffix.lower() == ".svg":
+        png_path = source_path.with_suffix(".png")
+        shutil.copy2(png_path, destination.with_suffix(".png"))
     print(f"Copied website asset: {destination}")
 
 
@@ -1270,4 +1276,3 @@ for csv_path in csvs_to_generate:
     generate_quarter(csv_path)
 
 print("\nFinished generating IPEA quarterly charts for all selected files.")
-

@@ -156,8 +156,7 @@ def write_csv(path, rows):
 def page_content(result):
     rows=''.join(f'<tr><th scope="row">{escape(LABELS[k])}</th><td>${v/1000:,.1f} billion</td></tr>'
                  for k,v in result['totals_millions'].items() if k in LABELS)
-    charts=''.join(f'''<div class="card shadow-sm mb-4"><img class="card-img-top" src="/charts/abs_gfs/FY2025-26_quarterly_derived/{name}.svg" alt="{label}">
-    <div class="card-body"><a class="btn btn-sm btn-outline-secondary" href="/charts/abs_gfs/FY2025-26_quarterly_derived/{name}_data.csv" download>Download chart data</a></div></div>'''
+    charts=''.join(f'''<div class="card shadow-sm mb-4"><img class="card-img-top" src="/charts/abs_gfs/FY2025-26_quarterly_derived/{name}.svg" alt="{label}"><div class="card-body border-top py-3 d-flex flex-wrap gap-2" role="group" aria-label="Chart downloads"><a class="btn btn-sm btn-outline-secondary" href="/charts/abs_gfs/FY2025-26_quarterly_derived/{name}.png" download>Download PNG</a><a class="btn btn-sm btn-outline-secondary" href="/charts/abs_gfs/FY2025-26_quarterly_derived/{name}.svg" download>Download SVG</a><a class="btn btn-sm btn-outline-secondary" href="/charts/abs_gfs/FY2025-26_quarterly_derived/{name}_data.csv" download>Download CSV</a></div></div>'''
     for name,label in [('01_fiscal_summary','FY2025–26 revenue, expenses and net operating balance'),('02_selected_taxes','FY2025–26 personal income tax, company income tax and GST')])
     return f'''<main class="container py-4 py-md-5">
 <a href="/abs-gfs/">Back to ABS Government Finance Statistics</a>

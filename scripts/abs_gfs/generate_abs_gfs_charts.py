@@ -56,8 +56,8 @@ def copy_asset(path: Path, root: Path, label: str) -> None:
 
 
 def mirror_to_website(path: Path) -> None:
-    """Copy a generated SVG/CSV into the matching website annual folder."""
-    if path.suffix.lower() not in {".svg", ".csv"}:
+    """Copy a generated PNG/SVG/CSV into the matching website annual folder."""
+    if path.suffix.lower() not in {".png", ".svg", ".csv"}:
         return
     copy_asset(path, WEBSITE_CHART_DIR, "website")
 
@@ -290,4 +290,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

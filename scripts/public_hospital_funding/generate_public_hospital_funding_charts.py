@@ -25,7 +25,7 @@ def dollar_tick(value, _position):
 
 
 def mirror(path, output_root, website_root):
-    if path.suffix.lower() not in {".svg", ".csv"}:
+    if path.suffix.lower() not in {".png", ".svg", ".csv"}:
         return
     destination = website_root / path.relative_to(output_root)
     destination.parent.mkdir(parents=True, exist_ok=True)

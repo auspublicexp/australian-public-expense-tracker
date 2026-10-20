@@ -95,7 +95,7 @@ def period_charts(data, label, folder, logo):
 def copy_website_assets(output_root: Path, website_dir: Path) -> int:
     copied = 0
     for source in output_root.rglob("*"):
-        if source.is_file() and (source.suffix.lower() == ".svg" or source.name.endswith("_data.csv")):
+        if source.is_file() and (source.suffix.lower() in {".png", ".svg"} or source.name.endswith("_data.csv")):
             destination = website_dir / source.relative_to(output_root)
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, destination); copied += 1
@@ -109,6 +109,7 @@ def remove_old_quarterly_overview(output_root: Path, website_dir: Path) -> None:
         output_root / f"{stem}.png",
         output_root / f"{stem}.svg",
         output_root / f"{stem}_data.csv",
+        website_dir / f"{stem}.png",
         website_dir / f"{stem}.svg",
         website_dir / f"{stem}_data.csv",
     ):
@@ -154,7 +155,7 @@ def main() -> None:
     copied = 0 if args.no_website_copy else copy_website_assets(args.output_root, args.website_dir)
     print(f"Created {png_count} PNG and {svg_count} SVG charts in: {args.output_root.resolve()}")
     if not args.no_website_copy:
-        print(f"Copied {copied} website-ready SVG/CSV files to: {args.website_dir.resolve()}")
+        print(f"Copied {copied} website-ready PNG/SVG/CSV files to: {args.website_dir.resolve()}")
 
 
 if __name__ == "__main__":

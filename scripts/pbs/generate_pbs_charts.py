@@ -100,7 +100,7 @@ def overview_charts(data, annual, output_root, logo):
 def copy_website_assets(output_root: Path, website_dir: Path) -> int:
     copied = 0
     for source in output_root.rglob("*"):
-        if source.is_file() and (source.suffix.lower() == ".svg" or source.name.endswith("_data.csv")):
+        if source.is_file() and (source.suffix.lower() in {".png", ".svg"} or source.name.endswith("_data.csv")):
             destination = website_dir / source.relative_to(output_root)
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, destination)
@@ -178,7 +178,7 @@ def main() -> None:
         f"{counts['csv']} supporting CSV files in: {args.output_root.resolve()}"
     )
     if not args.no_website_copy:
-        print(f"Website copy: {copied} SVG/CSV files in: {args.website_dir.resolve()}")
+        print(f"Website copy: {copied} PNG/SVG/CSV files in: {args.website_dir.resolve()}")
 
 
 if __name__ == "__main__":

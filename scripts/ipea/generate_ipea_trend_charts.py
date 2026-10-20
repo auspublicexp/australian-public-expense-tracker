@@ -139,10 +139,10 @@ def main() -> None:
     category_chart(categories, args.output_dir / "02_selected_categories_over_time", args.logo)
     broad_chart(categories, args.output_dir / "03_office_and_travel_expenses_over_time", args.logo)
     for source in args.output_dir.glob("*"):
-        if source.suffix.lower() == ".svg" or source.name.endswith("_data.csv"):
+        if source.suffix.lower() in {".png", ".svg"} or source.name.endswith("_data.csv"):
             args.website_dir.mkdir(parents=True, exist_ok=True); shutil.copy2(source, args.website_dir / source.name)
     print(f"Created 3 IPEA trend charts for {len(totals)} complete financial years: {args.output_dir.resolve()}")
-    print(f"Copied website-ready SVG/CSV files to: {args.website_dir.resolve()}")
+    print(f"Copied website-ready PNG/SVG/CSV files to: {args.website_dir.resolve()}")
 
 
 if __name__ == "__main__":

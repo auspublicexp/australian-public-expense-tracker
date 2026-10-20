@@ -186,7 +186,7 @@ def main() -> None:
         "--logo", type=Path, default=project_root / "branding/APETLogo400x400.png"
     )
     parser.add_argument(
-        "--skip-website", action="store_true", help="Do not copy SVG/CSV website assets"
+        "--skip-website", action="store_true", help="Do not copy PNG/SVG/CSV website assets"
     )
     args = parser.parse_args()
 
@@ -218,12 +218,12 @@ def main() -> None:
     if not args.skip_website:
         args.website_dir.mkdir(parents=True, exist_ok=True)
         for source in args.output_dir.iterdir():
-            if source.suffix.lower() == ".svg" or source.suffix.lower() == ".csv":
+            if source.suffix.lower() in {".png", ".svg", ".csv"}:
                 shutil.copy2(source, args.website_dir / source.name)
 
     print(f"Created 2 Finance/AusTender trend charts: {args.output_dir.resolve()}")
     if not args.skip_website:
-        print(f"Copied website-ready SVG/CSV files to: {args.website_dir.resolve()}")
+        print(f"Copied website-ready PNG/SVG/CSV files to: {args.website_dir.resolve()}")
     print("The historical value-band chart was not created because comparable annual band data is unavailable.")
 
 

@@ -330,6 +330,9 @@ def mirror_file_to_website(source_path):
 
     destination = website_period_dir / source_path.name
     shutil.copy2(source_path, destination)
+    if source_path.suffix.lower() == ".svg":
+        png_path = source_path.with_suffix(".png")
+        shutil.copy2(png_path, destination.with_suffix(".png"))
     print(f"Copied website asset: {destination}")
 
 
@@ -753,4 +756,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
