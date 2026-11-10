@@ -43,6 +43,16 @@ For a historical quarter, the chart script resolves each contract to the latest 
 
 Quarterly outputs include summaries of supplier and agency contract value, the largest individual contracts, procurement methods, overseas supplier countries, and supplier contract counts. Supporting CSV files are generated alongside the charts.
 
+## Supplier-name standardisation
+
+AusTender supplier labels can differ in spelling or company-suffix conventions even when they refer to the same named supplier. For example, `DELL AUSTRALIA PTY LIMITED` and `DELL AUSTRALIA PTY LTD` would otherwise appear as separate categories in a top-suppliers chart.
+
+The reusable `clean_supplier_name()` function lives in `scripts/chart_helpers.py`. The quarterly generator retains the original `Supplier Name` field and creates a separate `Supplier Clean` field before splitting Defence/non-Defence data and grouping supplier-based charts. The current helper uppercases names, trims and collapses whitespace, standardises selected suffixes (including `LIMITED` to `LTD` and `PROPRIETARY` to `PTY`), and applies an explicit override dictionary for known variants. Supplier value and count summaries group by the cleaned name.
+
+**Interpretation and auditability:** This is label standardisation, not a verified corporate-entity resolution process. Similar names may belong to different entities; distinct trading names or subsidiaries should not automatically be merged. Confirm any more ambitious manual mapping against authoritative evidence, and record the mapping and reason in version-controlled code. Do not overwrite the raw supplier label or change the number or monetary value of underlying notices. Charts should state that supplier names have been standardised, especially when displaying aggregated supplier rankings.
+
+When debugging quarterly generation, keep reusable cleaning logic in `chart_helpers.py`, while quarter-specific grouping, chart wrappers and chart calls remain available in the generator. Ensure a requested quarter is nonempty before cleaning; construct `Supplier Clean` before producing Defence/non-Defence subsets; and use the same cleaned column for both grouping and chart labels. Avoid duplicating the cleaning function or removing unrelated helper functions during edits.
+
 ## Important limitations
 
 - Reported contract value is not necessarily expenditure paid during the displayed quarter.
