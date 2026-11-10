@@ -45,3 +45,9 @@ Chart-generation scripts should not automatically publish social posts. Drafting
 Automated tools may help identify candidate stories, prepare factual summaries or flag relevant public claims, but a human review should confirm the source, wording, context and link before publication.
 
 APET does not promise a fixed social-media publishing cadence. Quality, source verification and useful context take priority over posting frequency.
+
+## Generated captions and publishing records
+
+Earlier APET chart workflows generated local `*_post.txt` caption drafts alongside the corresponding chart image and supporting CSV. These drafts were treated as the source for preparing Buffer posts, while a separate spreadsheet tracked post IDs, reporting periods, chart categories, scheduling dates and published X URLs. The caption text and character count did not need to be duplicated in that tracking sheet.
+
+This is a **historical workflow decision, not a claim about every current generator**: the current IPEA and AusTender quarterly scripts do not write `*_post.txt` files. A generated caption is a draft rather than proof of publication, and it must be reviewed against the current chart and official data before being scheduled. If caption-file generation is reintroduced, the published post text or link should remain separately traceable because the draft can differ from the final Buffer/X post.
