@@ -30,6 +30,14 @@ Replies to public posts should be selective. A reply is appropriate when APET da
 
 Do not reply merely to promote APET. Skip weak, abusive, highly partisan or purely argumentative engagement where a neutral data contribution is unlikely to improve the discussion.
 
+## Acknowledging third-party engagement
+
+APET may acknowledge constructive or relevant quotes, reposts and comments with a like without adding a written response. A like is a lightweight acknowledgement, not an endorsement of every claim or opinion in the quoted post. Where a quote contains an unsupported, misleading or inflammatory claim, avoid liking it simply to acknowledge the share.
+
+Do not routinely reply to accounts that quote APET charts. Respond selectively when a factual clarification, source link or methodological correction would materially improve readers' understanding. Keep any response concise and avoid extended political arguments.
+
+A third-party interpretation should not be adopted as APET's own conclusion unless it is supported by the data. Consistent presentation, precise reporting periods and clear official-source attribution help charts remain understandable when shared outside their original context.
+
 ## Drafting and publication
 
 Chart-generation scripts should not automatically publish social posts. Drafting, context checking and final publication remain separate steps.
