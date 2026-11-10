@@ -49,3 +49,7 @@ Sitemap: https://auspublicexp.org/sitemap.xml
 The website is the primary public archive; social media posts and replies are manually reviewed rather than automatically published. Include source citations and material reporting limitations, particularly the difference between reported contract/grant amounts and actual payments. See [editorial and social-media policy](editorial-social-media-policy.md) and dataset-specific methodology documents.
 
 These notes preserve the original implementation decisions for future maintainers. They are not a substitute for inspecting current hosting configuration, live website files or source-processing scripts.
+
+## Historical AusTender quarterly publication checklist
+
+The July 2026 manual sequence for checking weekly exports, generating quarterly charts, allocating Buffer Post IDs, synchronising PNGs with WinSCP, copying a quarter PHP page and enabling the yearly navigation link is preserved in the [AusTender quarterly publishing workflow — July 2026 reference](austender-quarterly-publishing-workflow-2026-07.md). That note is historical; use current scripts, templates and chart-download support for new releases.
