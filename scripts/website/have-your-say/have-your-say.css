@@ -1,0 +1,33 @@
+.say-page { max-width: 1120px; }
+.say-intro { max-width: 850px; }
+.say-page p, .say-page li { line-height: 1.65; }
+.say-page a { text-underline-offset: .15em; }
+.say-page a:focus-visible, .say-page button:focus-visible, .say-page summary:focus-visible { outline: 3px solid #176378; outline-offset: 4px; }
+.say-section { margin-bottom: 3.5rem; scroll-margin-top: 1.5rem; }
+.say-section h2 { margin-bottom: 1rem; }
+.say-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; }
+.say-steps a { padding: 1rem; background: #fff; border: 1px solid #cdd4dd; border-radius: 12px; color: #212529; font-weight: 600; }
+.say-steps span { display: block; font-size: 1.5rem; color: #176378; }
+.say-details { padding: 1.25rem; background: #fff; border: 1px solid #cdd4dd; border-radius: 12px; scroll-margin-top: 1rem; }
+.say-details summary { cursor: pointer; }
+.say-directory { table-layout: fixed; width: 100%; }
+.say-directory th, .say-directory td { overflow-wrap: anywhere; }
+.say-checklist li { margin-bottom: .65rem; }
+.say-page textarea { line-height: 1.65; resize: vertical; min-height: 12rem; }
+.say-status:empty { display: none; }
+.say-status:not(:empty) { padding: .75rem 1rem; background: #e8f1f4; border-radius: 8px; }
+.say-print-text { display: none; }
+@media (max-width: 767.98px) { .say-steps { grid-template-columns: repeat(2, 1fr); } .say-directory { font-size: .9rem; } .say-details { padding: 1rem; } }
+@media (min-width: 992px) and (max-width: 1199.98px) { .navbar-brand .d-md-inline { max-width: 270px; white-space: normal; font-size: 1rem; } }
+@media print {
+    body { background: #fff; }
+    body > nav, body > .container-fluid, body > footer, .say-steps, .say-page button, .say-status { display: none !important; }
+    .say-page { max-width: none; padding: 0 !important; }
+    .say-section { margin-bottom: 1.5rem; }
+    .say-page .row { display: block; }
+    .say-page .row > div { width: 100%; margin-bottom: 1rem; }
+    .say-page .card, .say-details { box-shadow: none !important; border: 1px solid #aaa; }
+    .say-page h2, .say-page h3 { break-after: avoid; }
+    .say-print-text { display: block; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; }
+    .say-page textarea.say-print-ready { display: none; }
+}
