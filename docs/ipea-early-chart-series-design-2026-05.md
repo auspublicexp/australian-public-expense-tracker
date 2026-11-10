@@ -62,3 +62,13 @@ The May 2026 idea was to publish backlogged quarter charts in broad-to-specific 
 The development session relied on iterative CSV inspection to correct two erroneous assumptions about column names and category levels. It also initially calculated `Other` by subtracting named sums from *all numeric columns*, which is unsound and must not be reused. Earlier chart prototypes may have swallowed nonnumeric amounts as zero, or grouped personnel by combined name/party keys; current production logic should be audited against official fields and its own documented handling of corrections and missing values. Historical chart series names are working presentation labels, not evidence that quarter-to-quarter increases reflect inappropriate spending.
 
 This record is for design provenance and continuity. Revalidate category definitions, comparability and chart outputs using the current pipeline and source files before making substantive public claims.
+
+## Additional early X-chart and audit-trail decisions (19 May 2026)
+
+The first top-10 parliamentarian chart was tested as a **16:9 landscape image** (Matplotlib `figsize=(16, 9)`, initially exported at 100 dpi) for X. This was a practical early format, not a guarantee of an enduring platform-specific optimal size; review legibility on mobile and current platform guidance before changing production settings.
+
+An initial grey-bar chart was revised to use party-specific bar colours, including orange for One Nation. The intent was to make affiliation readable without partisan emphasis. Party labels and colours are **APET display metadata**, and affiliation must be checked for the reporting period rather than assumed from a person's current party. See [party normalisation and comparisons](ipea-party-normalisation-and-quarterly-comparisons.md).
+
+The user also requested a **chart-specific CSV exported alongside each PNG** to preserve the exact values underlying the visualisation for internal records and reproducibility. The historical prototype exported `DisplayName`, `FullNameWithTitle`, `Party`, and `Amount` for the top-ten chart. Supporting CSVs are primarily an audit trail; they need not be attached to every X post. Source attribution and a link to the public data/methodology should accompany public posts where appropriate. This requirement is now reflected in the maintained chart pipeline and its documented output conventions.
+
+The original `05_functions.py` example used fixed file paths, a fixed Jan–Mar 2026 title, and simplistic name/party mappings. **Do not reinstate it**: it is retained only as design history. Use current generators and validate both PNG and CSV outputs against the official extract.
