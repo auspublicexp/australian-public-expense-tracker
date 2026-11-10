@@ -227,6 +227,12 @@ Dataset chart pages offer **PNG images**, **SVG images** and **CSV data** where 
 
 Chart builders publish PNGs alongside their existing SVG/CSV exports during normal refreshes. See the [chart-download implementation and validation record](docs/chart-downloads.md) for the reusable PHP helper, page integration, mobile layout and checks completed on 19 October 2026. Generated chart images, source datasets and local validation reports remain outside version control.
 
+## Editorial and social media
+
+APET treats the website as the primary public archive and uses social media selectively to add context to published findings rather than automatically promoting every chart. Posts and replies are manually reviewed for source accuracy, terminology, material limitations and neutral framing.
+
+- [Editorial and social-media policy](docs/editorial-social-media-policy.md)
+
 ## Reproducibility
 
 This repository includes documented data-processing scripts, source links, chart-generation code, methodology notes, and software requirements. Large source datasets are not stored here; users should obtain them from the official publisher.
