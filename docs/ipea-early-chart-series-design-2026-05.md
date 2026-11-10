@@ -62,3 +62,17 @@ The May 2026 idea was to publish backlogged quarter charts in broad-to-specific 
 The development session relied on iterative CSV inspection to correct two erroneous assumptions about column names and category levels. It also initially calculated `Other` by subtracting named sums from *all numeric columns*, which is unsound and must not be reused. Earlier chart prototypes may have swallowed nonnumeric amounts as zero, or grouped personnel by combined name/party keys; current production logic should be audited against official fields and its own documented handling of corrections and missing values. Historical chart series names are working presentation labels, not evidence that quarter-to-quarter increases reflect inappropriate spending.
 
 This record is for design provenance and continuity. Revalidate category definitions, comparability and chart outputs using the current pipeline and source files before making substantive public claims.
+
+## Initial chart branding and X-caption workflow (21 May 2026)
+
+The first published IPEA chart series was created as 16:9 Matplotlib horizontal bar charts, with readable names and currency labels, restrained party colours, a small APET logo at lower left, and a larger grey attribution footer. The logo was loaded from the local `branding/APETLogo400x400.png` asset, and the footer included **@auspublicexp** plus IPEA/data.gov.au source attribution. The purpose was recognisable, reusable branding even when images were shared without their original X posts.
+
+Adding the logo through `fig.add_axes(...)` produced Matplotlib's `tight_layout` compatibility warning. The historical fix was to use explicit `fig.subplots_adjust(left=..., right=..., top=..., bottom=...)` instead of `plt.tight_layout(...)`. The current implementation centralises this in `scripts/chart_helpers.py` through `add_brand_logo`, `add_standard_footer` and `apply_chart_layout`; do not copy the old standalone script back into production.
+
+The original script exported 10 top-amount and 10 previous-quarter-increase charts (with supporting CSV files) for a manually selected source quarter, for example `2024q01_dataextract.csv`. The screenshot-reviewed output included domestic and international travel, COMCAR, travel allowance, printing and communications, publications, telecommunications and office consumables/services. This initial 20-chart series was later superseded by the 23-chart sequence documented above.
+
+For early X posts, the user chose **short neutral captions** summarising the source category and period, usually with official source domains (`ipea.gov.au` and `data.gov.au`) and `#auspol`. Caption drafts had to fit X's character limit, and there was no need to repeat every value already visible in the image. Example template (a historical drafting convention, not an instruction to auto-post):
+
+> Biggest increases in reported [category] spending from Oct–Dec 2023 to Jan–Mar 2024 based on official IPEA expenditure data.\n>\n> Source data: ipea.gov.au / data.gov.au\n>\n> #auspol
+
+These are **rankings of reported amounts or their changes**, not claims of improper spending or like-for-like behavioural changes. In particular, a quarter-on-quarter increase may reflect adjustments, reporting dates, changing officeholders or unmatched names/party labels. Follow the current [IPEA methodology](ipea-methodology.md), [comparison caveats](ipea-party-normalisation-and-quarterly-comparisons.md) and [editorial policy](editorial-social-media-policy.md) before publishing.
