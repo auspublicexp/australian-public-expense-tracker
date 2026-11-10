@@ -214,6 +214,13 @@ Where practical, each published chart or table will identify:
 
 The official government publisher remains the authoritative source. APET does not alter source records, estimate unreported expenditure or present its calculations as official government statistics.
 
+
+### Reuse by journalists and researchers
+
+APET is designed so that a journalist, researcher or member of the public can independently check a published figure before citing or reusing it. Where practical, the path from a chart or table should lead back to the relevant official source, methodology and processing code, with enough context to understand what the figure represents and what it does not represent.
+
+A useful transparency standard for new APET sections is therefore: **could an independent reader trace the published result back to its official source and reproduce the main transformation without relying on an unpublished explanation?**
+
 ## Reusable chart downloads
 
 Dataset chart pages offer **PNG images**, **SVG images** and **CSV data** where the corresponding files are available. PNGs make it easier to share charts online with their titles, reporting periods, units and source notes intact. The NDIS chart page provided the pattern for extending these downloads across the other nine dataset collections.
