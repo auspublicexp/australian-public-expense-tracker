@@ -52,3 +52,11 @@ The then-proposed release order was: post annual summaries for the historical ba
 ## Preservation and exclusions
 
 This note records decisions, not runnable old versions of the scripts. Do not commit raw official extracts, generated plot PNGs, local posting workbooks, or old pasted helper/quarterly/annual scripts simply to archive this conversation. The maintained code and methodology remain authoritative.
+
+## Earliest local publication-folder convention (20 May 2026)
+
+Before the later posting-log proposal, the first quarterly batch generator was reported to produce ten ranked expenditure charts and ten quarter-on-quarter increase charts for one selected source CSV, saving a PNG and matching verification CSV for each chart under a quarter-specific directory such as `output/2024q01_dataextract/`. For comparison charts it located the preceding quarter, e.g. `2023q04_dataextract` for `2024q01_dataextract`.
+
+The maintainer manually created a folder named `P1` in that quarter's output directory after publishing the first X post, as a simple visual marker for posted material. The discussion suggested a more explicit `P01_posted/` convention, optionally containing the posted chart, its data CSV, final caption and screenshot or post URL. **This was a suggested local archive practice, not evidence of a fully implemented automated posting tracker or the current production convention.** Do not move generated files out of directories expected by present-day publishing or search scripts without checking their dependencies; a separate posting log or archive may be safer.
+
+The original one-quarter generator was referred to as `21_generate_all_charts_for_one_quarter.py` in that conversation. Its complete code was not preserved there; do not recreate it from this historical description or treat the early output list as the current chart schema. The maintained pipeline and current editorial policy supersede it.
