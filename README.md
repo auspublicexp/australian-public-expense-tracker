@@ -233,9 +233,15 @@ APET treats the website as the primary public archive and uses social media sele
 
 - [Editorial and social-media policy](docs/editorial-social-media-policy.md)
 
+## How to help
+
+Report a possible data discrepancy, confusing wording, a broken link or an accessibility problem through [Issues](https://github.com/auspublicexp/australian-public-expense-tracker/issues/new/choose). Code is only one way to contribute. See [CONTRIBUTING.md](CONTRIBUTING.md) for useful report details, small change ideas and validation expectations.
+
 ## Reproducibility
 
 This repository includes documented data-processing scripts, source links, chart-generation code, methodology notes, and software requirements. Large source datasets are not stored here; users should obtain them from the official publisher.
+
+For a worked example, follow [Reproduce an NDIS chart from official source files](docs/reproduce-a-chart.md). It builds into a separate output directory, records the source versions and checks the chart values without changing a published website.
 
 ## Project status
 

@@ -1,0 +1,39 @@
+name: Report a website or script problem
+description: Report a broken link, accessibility problem, unexpected display or failed script.
+title: "Problem: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For a possible difference between an APET figure and its official source, use the data-discrepancy form instead. Reports are public; remove credentials and private information from examples.
+  - type: input
+    id: location
+    attributes:
+      label: Page URL or script name
+      description: Where did the problem occur?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Describe what you selected or the command you ran. For scripts, include relevant arguments and public input filenames.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected and actual result
+      description: What did you expect, and what happened? A short error excerpt or screenshot can help.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser, device or Python version
+      description: Include whichever details are relevant. For keyboard or assistive-technology problems, describe the affected navigation or reading step.
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested improvement (optional)
+      description: You do not need to know the fix to report the problem.
