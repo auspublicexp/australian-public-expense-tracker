@@ -16,6 +16,13 @@ body:
         - IPEA
         - AusTender
         - GrantConnect
+        - ARC research grants
+        - ABS Government Finance Statistics
+        - Public hospital funding
+        - PBS and RPBS medicines
+        - Medicare MBS
+        - DFAT foreign aid
+        - NDIS payments
         - Other or unsure
     validations:
       required: true
