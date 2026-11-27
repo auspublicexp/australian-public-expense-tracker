@@ -24,14 +24,15 @@ from validation_report import write_validation_report
 
 
 PROJECT_DIR = Path(__file__).parents[2]
+OUTPUT_DIR = PROJECT_DIR / "output" / "ipea"
 CHART_ROOT = Path(os.getenv(
     "APET_IPEA_CHART_ROOT",
-    PROJECT_DIR / "website" / "public_html" / "charts" / "ipea",
+    OUTPUT_DIR,
 ))
 DATA_ROOT = Path(os.getenv("APET_IPEA_DATA_ROOT", PROJECT_DIR / "data" / "ipea"))
 INDEX_PATH = Path(os.getenv(
     "APET_IPEA_SEARCH_INDEX",
-    PROJECT_DIR / "website" / "public_html" / "ipea" / "ipea-search-index.json",
+    OUTPUT_DIR / "ipea-search-index.json",
 ))
 
 
