@@ -28,7 +28,7 @@ Funding figures are whole-of-project allocations, not cash paid in the commencem
 - ARC projects can also be published through GrantConnect. Do not add ARC and GrantConnect totals together.
 - The administering organisation is not necessarily where every component of the research takes place.
 - The earliest 2001 records appear partial.
-- The current incomplete calendar year is excluded from charts by default.
+- The current incomplete calendar year is excluded from charts by default, but its records may still appear in [project search](https://auspublicexp.org/arc-grants/search.php). Search results link to an APET year page only when that year has published charts. The official ARC record link is retained when supplied.
 - Research-field classifications transition from FoR 2008 to FoR 2020 in recent records, so long-term field comparisons require care.
 - Validation can detect structural problems but cannot independently confirm that an official source record is factually correct.
 

@@ -67,7 +67,7 @@ The generated JSON index is a website output and is not committed to this reposi
 
 Website asset mirroring is disabled by default. Set `APET_IPEA_WEBSITE_CHART_DIR` if generated SVG and CSV files should also be copied into a website project.
 
-By default, `build_ipea_search_index.py` reads chart-supporting files from `output/ipea` and writes `output/ipea/ipea-search-index.json`. These locations can be changed with `APET_IPEA_CHART_ROOT` and `APET_IPEA_SEARCH_INDEX_PATH`.
+By default, `build_ipea_search_index.py` reads chart-supporting files from `output/ipea` and writes `output/ipea/ipea-search-index.json`. These locations can be changed with `APET_IPEA_CHART_ROOT` and `APET_IPEA_SEARCH_INDEX`. For a site with charts and search data in separate folders, set both explicitly.
 
 ## Important limitations
 

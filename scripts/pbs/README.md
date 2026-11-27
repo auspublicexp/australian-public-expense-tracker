@@ -17,6 +17,14 @@ not need to run it for the website.
 
 The chart generator deliberately stays one complete source quarter behind. This gives late claims and revisions more time to be incorporated. It also uses only complete financial years in annual comparisons.
 
+## Preserve historical months when the workbook rolls forward
+
+Before a refresh, preserve the previous official workbook, its retrieval manifest and the normalised CSV. A newer workbook can start later than APET's existing public series. Check the actual first and last month after normalising; do not treat the workbook filename as a completeness check.
+
+If the new workbook drops earlier months, retain only those non-overlapping months from the previous official snapshot. Use the current workbook for **every** overlapping month, including revisions. For example, the July 2022–September 2026 workbook omitted FY2021–22, so APET retained July 2021–June 2022 from its previous snapshot. The November 2026 refresh still published only through June 2026 under the one-quarter delay.
+
+Combine the two normalised inputs in a separate staged CSV with the same columns. Record which snapshot supplied each date range and verify one row per `month_of_supply`, `atc5_code` and `drug_name`, with no missing months across the covered range. This step is not automatic. Pass that same CSV with `--data-file` to the validator, chart generator and search builder; ensure the latter two use the validator's report. Confirm that both outputs retain the prior history and that neither includes the held-back quarter.
+
 The prototype creates six views:
 
 1. government expenditure by financial year;

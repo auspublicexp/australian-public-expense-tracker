@@ -22,6 +22,8 @@ This document preserves website setup choices from APET's June 2026 rollout. It 
 
 ## Local editing and publishing
 
+For the current pre-publication workflow, see [website release checks](website-release-checks.md) and [sitemap generation](website-discovery.md). The tools expect the maintained local website tree, not a bare repository checkout.
+
 - Original deployment used WinSCP over SFTP/SSH, with Hostinger-provided host, port, username and authentication settings. Never commit server access details or credentials.
 - Keep a local website copy, edit and test locally, review a synchronization preview, then transfer local changes to Hostinger. Use local-to-remote synchronization and leave remote deletion disabled unless intentional.
 - Source datasets, chart-generation outputs and X post-caption archives are separate from the deployable web assets. The original publishing archive grouped charts, supporting CSV and captions by Post ID; site assets were copied into a separate website tree.
